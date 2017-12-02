@@ -16,19 +16,19 @@ class Snake
      * @param {number} y
      */
     constructor(x, y) {
-        v = validate(x, y)
+        let v = this.valid_set(x, y)
         this.Minos = [
             new Mino(v.pos),
             new Mino({x: v.pos.x + 1, y: v.pos.y})
         ];
         // current dir
-        this.dir = 'down';
-        this.dirs = {
-            left: { x: -1, y: 0 },
-            right: { x: 1, y: 0 },
-            up: { x: 0, y: -1 },
-            down: { x: 0, y: 1 }
-        };
+        this.dir = 2;
+        this.dirs = [
+            { x: -1, y: 0 },
+            { x: 1, y: 0 },
+            { x: 0, y: -1 },
+            { x: 0, y: 1 }
+        ];
     }
     /** valid_set
      *
@@ -49,7 +49,7 @@ class Snake
      * @param {{x:number, y:number}} pos
      */
     add_mino(pos) {
-        v = validate(x, y)
+        let v = this.valid_set(x, y)
         if (v.valid)
             this.Minos.push(new Mino(v.pos))
     }
@@ -81,7 +81,7 @@ const ST = {
 // ATTENTION
 // the first coordinate is Y
 // it's faster to remove lines
-let grid[SIZE.H][SIZE.W];
+let grid = new Array(SIZE.H,SIZE.W);
 let snake;
 
 // Player
@@ -89,25 +89,12 @@ const PL = {
     SNK: 0,
     TRS: 1
 }
-// DIRS
-const DIRS = {
-    LEFT: 'left',
-    RIGHT: 'right',
-    UP: 'up',
-    DOWN: 'down'
-};
 
 function newGame() {
 	// it's just a prototype, folks!
 	let dirs_to_mino_type = (dir) => {
 		switch (dir) {
 		}
-	};
-	let head_type = {
-		 DIRS.LEFT: MINO_TYPE.HEAD_L,
-		 DIRS.RIGHT: MINO_TYPE.HEAD_R,
-		 DIRS.UP: MINO_TYPE.HEAD_U,
-		 DIRS.DOWN: MINO_TYPE.HEAD_D
 	};
 	// time's atom
 	let clk_time = 500;
@@ -136,20 +123,23 @@ function gameTick() {
 	// TODO remove the debug thing
 	g.g.thing.x += 32;
 
-	// heading snake to the right direction
-	let {x, y} = snake.get_head().pos;
-	grid[y][x] = head_type[snake.dir];
-	{x, y} = snake.get_tail().pos;
+    // heading snake to the right direction
+    {
+        let {x, y} = snake.get_head().pos;
+        grid[y][x] = snake.dir;
+    }
+	let {x, y} = snake.get_tail().pos;
 	// TODO ...
 
     // input for snake
     if (input[PL.SNK].up.isDown) {
-        snake.dir = DIRS.UP;
+        snake.dir = MINO_TYPE.HEAD_U;
     } else if (input[PL.SNK].down.isDown) {
-        snake.dir = DIRS.DOWN;
+        snake.dir = MINO_TYPE.HEAD_D;
     } else if (input[PL.SNK].right.isDown) {
-        snake.dir = DIRS.RIGHT;
+        snake.dir = MINO_TYPE.HEAD_R;
     } else if (input[PL.SNK].left.isDown) {
-        snake.dir = DIRS.left;
+        snake.dir = MINO_TYPE.HEAD_L;
     }
+
 }
