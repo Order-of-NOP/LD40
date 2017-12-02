@@ -117,12 +117,12 @@ function newGame() {
 			sprite_grid[r][c].play(MINO_TYPE.EMPTY.toString());
 		}
 	}
-
+  
 	// init all the stuff
 	snake = new Snake(5, 5);
-    tetr = new Tetramino('i', 10, 10);
-    dminos = [];
-	// when all done, start a timer
+	tetr = spawn_tetr();
+
+  // when all done, start a timer
 	clk.start();
 }
 
@@ -143,6 +143,12 @@ function dead_in_grid(mino_pos) {
     return (mino_pos.x > -1 && mino_pos.x < SIZE.W
         && mino_pos.y > -1 && mino_pos.y < SIZE.H-1);
 }
+
+function spawn_tetr() {
+	start = new Mino({x: SIZE.W/2, y: 0});
+	return new Tetramino(game.rnd.pick('litjls'), mino);
+}
+
 // main game tick
 function gameTick() {
     // heading snake to the right direction
@@ -214,11 +220,33 @@ function gameTick() {
         set_grid(y, x, snake.dir);
     }
 
-	// draw a tetramino
+	// move a tetramino
 	let minos = tetr.minos;
+	// tetramino's way is free to fall
+	let free_to_fall = true;
 	for (let i = 0; i < minos.length; ++i) {
 		let {x, y} = minos[i].pos;
-		set_grid(y, x, MINO_TYPE.ACTIVE);
+		// TODO there are some more cases
+		if (grid[y+1][x] !== MINO_TYPE.EMPTY &&
+			grid[y+1][x] !== MINO_TYPE.ACTIVE) {
+			free_to_fall = false;
+			break;
+		}
 	}
-	tetr.change_pos(tetr.rotate());
+	if (free_to_fall) {
+		minos.forEach((it, i, arr) => {
+			let {x, y} = it.pos;
+			set_grid(y, x, MINO_TYPE.EMPTY);
+			arr[i].pos.y++;
+			set_grid(y+1, x, MINO_TYPE.ACTIVE);
+		});
+		tetr.set_pos(minos);
+	} else {
+		minos.forEach((it, i, arr) => {
+			let {x, y} = it.pos;
+			set_grid(y, x, MINO_TYPE.STILL);
+		});
+		tetr = spawn_tetr();
+	}
+	//tetr.set_pos(tetr.rotate());
 }
