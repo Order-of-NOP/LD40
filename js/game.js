@@ -145,8 +145,8 @@ function dead_in_grid(mino_pos) {
 }
 
 function spawn_tetr() {
-	start = new Mino({x: SIZE.W/2, y: 0});
-	return new Tetramino(game.rnd.pick('litjls'), mino);
+	let start = new Mino({x: SIZE.W/2, y: 0});
+	return new Tetramino(game.rnd.pick('litjls'), start);
 }
 
 // main game tick
