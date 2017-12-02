@@ -103,12 +103,6 @@ function newGame() {
 		switch (dir) {
 		}
 	};
-	let head_type = {
-		 DIRS.LEFT: MINO_TYPE.HEAD_L,
-		 DIRS.RIGHT: MINO_TYPE.HEAD_R,
-		 DIRS.UP: MINO_TYPE.HEAD_U,
-		 DIRS.DOWN: MINO_TYPE.HEAD_D
-	};
 	// time's atom
 	let clk_time = 500;
 
@@ -138,7 +132,8 @@ function gameTick() {
 
 	// heading snake to the right direction
 	let {x, y} = snake.get_head().pos;
-	grid[y][x] = head_type[snake.dir];
+	// snake.dir supposed to be of MINO_TYPEs
+	grid[y][x] = snake.dir;
 	{x, y} = snake.get_tail().pos;
 	// TODO ...
 
