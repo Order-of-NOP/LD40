@@ -227,19 +227,20 @@ function gameTick() {
 	for (let i = 0; i < minos.length; ++i) {
 		let {x, y} = minos[i].pos;
 		// TODO there are some more cases
-		if (grid[y+1][x] !== MINO_TYPE.EMPTY &&
+		if (y >= SIZE.H - 1) { free_to_fall = false; break; }
+		else if (grid[y+1][x] !== MINO_TYPE.EMPTY &&
 			grid[y+1][x] !== MINO_TYPE.ACTIVE) {
 			free_to_fall = false;
 			break;
 		}
 	}
 	if (free_to_fall) {
+		// three runs along minos -_-
+		erase(minos);
 		minos.forEach((it, i, arr) => {
-			let {x, y} = it.pos;
-			set_grid(y, x, MINO_TYPE.EMPTY);
 			arr[i].pos.y++;
-			set_grid(y+1, x, MINO_TYPE.ACTIVE);
 		});
+		activate(minos);
 		tetr.set_pos(minos);
 	} else {
 		minos.forEach((it, i, arr) => {
@@ -249,4 +250,19 @@ function gameTick() {
 		tetr = spawn_tetr();
 	}
 	//tetr.set_pos(tetr.rotate());
+}
+
+// just two helper functions to draw things
+function erase(minos) {
+	minos.forEach((it) => {
+		let {x, y} = it.pos;
+		set_grid(y, x, MINO_TYPE.EMPTY);
+	});
+}
+
+function activate(minos) {
+	minos.forEach((it) => {
+		let {x, y} = it.pos;
+		set_grid(y, x, MINO_TYPE.ACTIVE);
+	});
 }

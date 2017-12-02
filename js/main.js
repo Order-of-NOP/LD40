@@ -107,14 +107,22 @@ function update() {
 			snake.dir = MINO_TYPE.HEAD_L;
 	}
 	// input for tetris
-	if (input[PL.TRS].up.isDown) {
-		console.log('player2 press up');
-	} else if (input[PL.TRS].down.isDown) {
-		console.log('player2 press down');
-	} else if (input[PL.TRS].right.isDown) {
-		console.log('player2 press right');
-	} else if (input[PL.TRS].left.isDown) {
-		console.log('player2 press left');
+	if (input[PL.TRS].up.justReleased()) {
+		erase(tetr.minos);
+		tetr.set_pos(tetr.rotate());
+		activate(tetr.minos);
+	} else if (input[PL.TRS].down.justReleased()) {
+		erase(tetr.minos);
+		tetr.move('down');
+		activate(tetr.minos);
+	} else if (input[PL.TRS].right.justReleased()) {
+		erase(tetr.minos);
+		tetr.move('right');
+		activate(tetr.minos);
+	} else if (input[PL.TRS].left.justReleased()) {
+		erase(tetr.minos);
+		tetr.move('left');
+		activate(tetr.minos);
 	}
 }
 
