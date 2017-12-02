@@ -3,11 +3,9 @@ class Mino
     /** Mino
      * 
      * @param {{x:number, y:number}} pos 
-     * @param {string} color 
      */
-    constructor(pos, color) {
+    constructor(pos) {
         this.pos = pos;
-        this.color = color;
     }
 };
 class Snake
@@ -74,20 +72,17 @@ class Snake
         }
     }
 }
-
 // ST for states
 const ST = {
 	MENU: 0,
 	GAME: 1,
 	OVER: 2
 };
-
 // Player
 const PL = {
     SNK: 0,
     TRS: 1
 }
-
 // DIRS
 const DIRS = {
     LEFT: 'left',
@@ -95,7 +90,6 @@ const DIRS = {
     UP: 'up',
     DOWN: 'down'
 };
-
 function newGame() {
 	// time's atom
 	let clk_time = 500;
@@ -107,7 +101,6 @@ function newGame() {
 	// when all done, start a timer
 	clk.start();
 }
-
 // main game tick
 function gameTick() {
     g.g.thing.x += 32;
