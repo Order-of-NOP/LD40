@@ -113,12 +113,12 @@ function newGame() {
 			sprite_grid[r][c].play(MINO_TYPE.EMPTY.toString());
 		}
 	}
-
+  
 	// init all the stuff
 	snake = new Snake(5, 5);
 	tetr = spawn_tetr();
 
-	// when all done, start a timer
+  // when all done, start a timer
 	clk.start();
 }
 
@@ -184,4 +184,5 @@ function gameTick() {
 		});
 		tetr = spawn_tetr();
 	}
+	//tetr.set_pos(tetr.rotate());
 }

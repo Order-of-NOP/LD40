@@ -9,44 +9,110 @@ class Mino {
 };
 
 class Tetramino {
-	constructor(shape, init_pos_x, init_pos_y) {
-		this.shape = shape; // Figure shape status from set {i, o, z, t, l, s}.
-		switch(shape) {
-			case 'i':
-				this.minos = [
-					new Mino({x: init_pos_x, y: init_pos_y}),
-					new Mino({x: init_pos_x + 1, y: init_pos_y}),
-					new Mino({x: init_pos_x + 2, y: init_pos_y}),
-					new Mino({x: init_pos_x + 3, y: init_pos_y}),
-				]
-				break;
+	// Note: init_mino is the center mino of the shape,
+	// so it sould be placed in the center of the grid.
+	constructor(shape, init_mino) {
+		// Figure shape status from set {i, o, z, t, l, s, j}.
+		this.shape = shape; 
+		// Consider 0th mino as the center one.
+		if (shape === 'i') {
+			this.minos = [
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x - 2, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x - 1, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x + 1, y: init_mino.pos.y}),
+			]
 		}
-
-		this.rotation = 0; // Rotate status from set {0, 1, 2, 3}.
+		else if (shape === 'o') {
+				this.minos = [
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x + 1, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y + 1}),
+				new Mino({x: init_mino.pos.x + 1, y: init_mino.pos.y + 1}),
+			]
+		}
+		else if (shape === 'z') {
+				this.minos = [
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x - 1, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y + 1}),
+				new Mino({x: init_mino.pos.x + 1, y: init_mino.pos.y + 1}),
+			]
+		}
+		else if (shape === 't') {
+				this.minos = [
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x - 1, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y + 1}),
+				new Mino({x: init_mino.pos.x + 1, y: init_mino.pos.y}),
+			]
+		}
+		else if (shape === 'l') {
+				this.minos = [
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y + 1}),
+				new Mino({x: init_mino.pos.x + 1, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x + 2, y: init_mino.pos.y}),
+			]
+		}
+		else if (shape === 's') {
+				this.minos = [
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x - 1, y: init_mino.pos.y + 1}),
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y + 1}),
+				new Mino({x: init_mino.pos.x + 1, y: init_mino.pos.y}),
+			]
+		}
+		else if (shape === 'j') {
+				this.minos = [
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x - 2, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x - 1, y: init_mino.pos.y}),
+				new Mino({x: init_mino.pos.x, y: init_mino.pos.y + 1}),
+			]
+		}
+		else {
+			console.warn("WARNING: invalid shape token");
+		}
 	}
 
-	change_pos(new_pos) {
+	set_pos(new_minos) {
 		for (let i = 0; i < this.minos.length; i++) {
-			this.minos[i].pos.x = new_pos[i].x;
-			this.minos[i].pos.y = new_pos[i].y;
+			this.minos[i] = new_minos[i];
 		}
 	}
 
 	// TODO direction selection
 	rotate() {
-		switch(this.shape) {
-			case 'i':
-				switch(this.rotation) {
-					case 0:
-						return  [
-							{x: this.minos[2].pos.x, y: this.minos[2].pos.y - 2}, // 1st mino
-							{x: this.minos[2].pos.x, y: this.minos[2].pos.y - 1}, // 2nd mino
-							{x: this.minos[2].pos.x, y: this.minos[2].pos.y}, // 3rd mino
-							{x: this.minos[2].pos.x, y: this.minos[2].pos.y + 1} // 4rd mino
-						];
-						break;
-				}
+		if (this.shape === 'o') {
+			return this.minos;
 		}
+		// Calculate minos coordinates relative to the center.
+		// 0th mino is the center one, thus we start loop from 1th.
+		let new_minos = [];
+		new_minos.push(new Mino({
+			x: this.minos[0].pos.x,
+			y: this.minos[0].pos.y
+		}))
+		for (let i = 1; i < this.minos.length; i++) {
+			new_minos.push(new Mino({
+				x: this.minos[i].pos.x - this.minos[0].pos.x,
+				y: this.minos[i].pos.y - this.minos[0].pos.y,
+				//y: this.minos[0].pos.y - this.minos[i].pos.y
+			}))
+		}
+		// Generate new coordinates for non-center minos.
+		for (let i = 1; i < this.minos.length; i++) {
+			let old_x = new_minos[i].pos.x;
+			new_minos[i].pos.x = new_minos[i].pos.y;
+			new_minos[i].pos.y = -(old_x);
+		}
+		// Transform coordinates from local values back to global ones.
+		for (let i = 1; i < this.minos.length; i++) {
+			new_minos[i].pos.x = new_minos[i].pos.x + this.minos[0].pos.x;
+			new_minos[i].pos.y = new_minos[i].pos.y + this.minos[0].pos.y;
+		}
+		return new_minos;
 	}
 };
 
