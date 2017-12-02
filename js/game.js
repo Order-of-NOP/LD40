@@ -8,10 +8,11 @@ class Mino {
     }
 };
 
+// TODO move to another file
 class Tetramino
 {
 	constructor(shape, init_pos_x, init_pos_y) {
-		this.shape = shape; // Figure shape status from set {i, o, z, t, l, ?}.
+		this.shape = shape; // Figure shape status from set {i, o, z, t, l, s}.
 		switch(shape) {
 			case 'i':
 				this.minos = [
@@ -132,6 +133,7 @@ const ST = {
 let grid = make_grid(SIZE.H, SIZE.W);
 
 let snake;
+let tetr;
 
 // Player
 const PL = {
@@ -170,6 +172,7 @@ function newGame() {
 
 	// init all the stuff
 	snake = new Snake();
+	tetr = new Tetramino('i', 10, 10);
 
 	// when all done, start a timer
 	clk.start();
@@ -192,6 +195,8 @@ function gameTick() {
         // snake.dir supposed to be of MINO_TYPEs
 		set_grid(y, x, snake.dir);
     }
-	let {x, y} = snake.get_tail().pos;
-	set_grid(y, x, MINO_TYPE.SNAKE);
+	{
+		let {x, y} = snake.get_tail().pos;
+		set_grid(y, x, MINO_TYPE.SNAKE);
+	}
 }
