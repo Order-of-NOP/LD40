@@ -10,6 +10,14 @@ let g = {
 		clk: null,
 	}
 }
+/* input for players:
+	input[0] - snake,
+	input[1] - tetris
+*/
+let input = [
+	game.input.keyboard.createCursorKeys(),
+	null
+];
 
 function init() {
 	const config = {
@@ -27,7 +35,12 @@ function init() {
 		}
 	};
 	game = new Phaser.Game(config);
+
+	// init input
+
 }
+
+
 
 function preload() {
 	// load all the sprites, fonts and other stuff
