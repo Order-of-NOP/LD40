@@ -11,6 +11,7 @@ let g = {
 	}
 }
 
+
 function init() {
 	const config = {
 		width: 800,
