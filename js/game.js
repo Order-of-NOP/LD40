@@ -1,65 +1,68 @@
 class Snake
 {
-	/** init
-	 *
-	 * @param {number} x
-	 * @param {number} y
-	 */
-	constructor(x, y) {
-		let v = this.valid_set(x, y)
-		this.Minos = [
-			new Mino(v.pos),
-			new Mino({x: v.pos.x + 1, y: v.pos.y})
-		];
-		// current dir
-		this.dir = 2;
-		this.dirs = [
-			{ x: -1, y: 0 },
-			{ x: 1, y: 0 },
-			{ x: 0, y: -1 },
-			{ x: 0, y: 1 }
-		];
-	}
-	/** valid_set
-	 *
-	 * @param {number} x
-	 * @param {number} y
-	 */
-	valid_set(x, y){
-		return {
-			pos: {
-				x: x == null ? 0 : x,
-				y: y == null ? 0 : y
-			},
-			valid: x == null || y == null
-		}
-	}
-	/** add_mino
-	 *
-	 * @param {{x:number, y:number}} pos
-	 */
-	add_mino(pos) {
-		let v = this.valid_set(x, y)
-		if (v.valid)
-			this.Minos.push(new Mino(v.pos))
-	}
-	// get the first mino
-	get_head() { return this.Minos[0]; }
-	// get the last mino
-	get_tail() { return this.Minos[this.Minos.length - 1] }
+    /** init
+     *
+     * @param {number} x
+     * @param {number} y
+     */
+    constructor(x, y) {
+        let v = this.valid_set(x, y);
+        this.minos = [
+            new Mino(v.pos),
+            new Mino({x: v.pos.x + 1, y: v.pos.y}),
+            new Mino({x: v.pos.x + 2, y: v.pos.y}),
+            new Mino({x: v.pos.x + 3, y: v.pos.y})
+        ];
+        // current dir
+        // WARNING!!! dir from 2 to 5
+        this.dir = 4;
+        this.dirs = [
+            null,
+            null,
+            { x: 0, y: -1 },
+            { x: 0, y: 1 },
+            { x: -1, y: 0 },
+            { x: 1, y: 0 }
+        ];
+    }
 
-	move() {
-		// move mines from second to last blocks
-		for(let i = this.Minos.length; i > 0; i--) {
-			this.Minos[i].pos = this.Minos[i-1].pos
-		}
-		// move head
-		let h_pos = Minos[0].pos;
-		this.Minos[0].pos = {
-			x: h_pos.x + this.dirs[this.dir],
-			y: h_pos.y + this.dirs[this.dir]
-		}
-	}
+    get_head() { return this.minos[0]; }
+    get_tail() { return this.minos[this.minos.length - 1]}
+    /** valid_set
+     *
+     * @param {number} x
+     * @param {number} y
+     */
+    valid_set(x, y){
+        return {
+            pos: {
+                x: x == null ? 0 : x,
+                y: y == null ? 0 : y
+            },
+            valid: x == null || y == null
+        }
+    }
+    /** add_mino
+     *
+     * @param {{x:number, y:number}} pos
+     */
+    add_mino(pos) {
+        let v = this.valid_set(x, y)
+        if (v.valid) 
+            this.minos.push(new Mino(v.pos))
+    }
+
+    move() {
+        // move mines from second to last blocks
+        for(let i = this.minos.length - 1; i > 0; i--) {
+            this.minos[i].pos.x = this.minos[i-1].pos.x;
+            this.minos[i].pos.y = this.minos[i-1].pos.y;
+        }
+        // move head
+        this.minos[0].pos.x += this.dirs[this.dir].x;
+        this.minos[0].pos.y += this.dirs[this.dir].y
+
+    }
 }
 // ST for states
 const ST = {
@@ -89,7 +92,7 @@ function newGame() {
 		}
 	};
 	// time's atom
-	let clk_time = 500;
+	let clk_time = 200;
 
 	// setup clock timer
 	let clk = g.t.clk;
@@ -112,7 +115,7 @@ function newGame() {
 	}
 
 	// init all the stuff
-	snake = new Snake();
+	snake = new Snake(5, 5);
 	tetr = new Tetramino('i', 10, 10);
 
 	// when all done, start a timer
@@ -129,17 +132,25 @@ function set_grid(y, x, type) {
 
 // main game tick
 function gameTick() {
-	// heading snake to the right direction
-	// TODO move head
-	{
-		let {x, y} = snake.get_head().pos;
-		// snake.dir supposed to be of MINO_TYPEs
-		set_grid(y, x, snake.dir);
-	}
-	{
-		let {x, y} = snake.get_tail().pos;
-		set_grid(y, x, MINO_TYPE.SNAKE);
-	}
+    // heading snake to the right direction
+    {
+        // clear tail
+        let {x, y} = snake.get_tail().pos;
+        set_grid(y, x, MINO_TYPE.EMPTY);
+    }
+    // move
+    snake.move();
+    {
+        // set body
+        for(let i = 1; i < snake.minos.length; i++) {
+            let {x, y} = snake.minos[i].pos;
+            set_grid(y, x, MINO_TYPE.SNAKE);
+        }
+        // set head
+        let {x, y} = snake.get_head().pos;
+        set_grid(y, x, snake.dir);
+    }
+
 
 	// draw a tetramino
 	let minos = tetr.minos;
