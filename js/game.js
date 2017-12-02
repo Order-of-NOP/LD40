@@ -1,62 +1,3 @@
-class Mino {
-    /** Mino
-     *
-     * @param {{x:number, y:number}} pos
-     */
-    constructor(pos) {
-        this.pos = pos;
-    }
-};
-
-class Tetramino
-{
-	constructor(shape, init_pos_x, init_pos_y) {
-		this.shape = shape; // Figure shape status from set {i, o, z, t, l, ?}.
-		switch(shape) {
-			case 'i':
-				this.minos = [
-				new Mino({x : init_pos_x, y : init_pos_y}),
-				new Mino({x : init_pos_x + 1, y : init_pos_y}),
-				new Mino({x : init_pos_x + 2, y : init_pos_y}),
-				new Mino({x : init_pos_x + 3, y : init_pos_y}),
-				]
-				break;
-		}
-
-		this.rotate = 0; // Rotate status from set {0, 1, 2, 3}.
-	}
-
-	next_pos() {
-		for (let i = 0; i < this.minos.length; i++) {
-			this.minos[i].y++;
-		}
-	}
-
-	change_pos(new_pos) {
-		for (let i = 0; i < this.minos.length; i++) {
-			this.minos[i].x = new_pos[i].x;
-			this.minos[i].y = new_pos[i].y;
-		}
-	}
-
-	rotate() {
-		switch(this.shape) {
-			case 'i':
-				switch(this.rotate) {
-					case 0:
-						this.minos[0].x = this.minos[2].x;
-						this.minos[1].x = this.minos[2].x;
-						this.minos[3].x = this.minos[2].x;
-						this.minos[0].y = this.minos[2].y - 2;	
-						this.minos[1].y = this.minos[2].y - 1;	
-						this.minos[3].y = this.minos[2].y + 1;	
-						break;
-				}
-		}
-	}
-};
-
-
 class Snake
 {
     /** init
@@ -136,11 +77,12 @@ const ST = {
 let grid = make_grid(SIZE.H, SIZE.W);
 
 let snake;
+let tetr;
 
 // Player
 const PL = {
-    SNK: 0,
-    TRS: 1
+	SNK: 0,
+	TRS: 1
 }
 
 function newGame() {
@@ -173,7 +115,8 @@ function newGame() {
 	}
 
 	// init all the stuff
-	snake = new Snake(10, 5);
+	snake = new Snake(5, 5);
+	tetr = new Tetramino('i', 10, 10);
 
 	// when all done, start a timer
 	clk.start();
@@ -207,4 +150,14 @@ function gameTick() {
         let {x, y} = snake.get_head().pos;
         set_grid(y, x, snake.dir);
     }
+
+
+	// draw a tetramino
+	let minos = tetr.minos;
+	console.log(JSON.stringify(minos));
+	for (let i = 0; i < minos.length; ++i) {
+		let {x, y} = minos[i].pos;
+		set_grid(y, x, MINO_TYPE.ACTIVE);
+	}
+	tetr.change_pos(tetr.rotate());
 }
