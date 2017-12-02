@@ -129,7 +129,6 @@ function newGame() {
 /* sets states in both grid and sprite_grid */
 // TODO investigate, do we really need `grid`
 function set_grid(y, x, type) {
-    console.log(y,x,type);
 	if (typeof(type) !== 'number') console.warn(`'${type}' is not a number.`);
 	grid[y][x] = type;
 	sprite_grid[y][x].play(type.toString());
@@ -154,7 +153,6 @@ function gameTick() {
     }
     // snake alive
     if (!snake.dead) {
-        console.log('alive')
         // snake in grid
         if (head_in_grid(snake.get_head().pos)) {
             snake.move();
@@ -196,7 +194,15 @@ function gameTick() {
         set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.DEAD);
     }
     // check collision snake with dminos
-    // TODO ...
+    {
+        let {x, y} = snake.get_head().pos;
+        for(let i = 0; i < dminos.length; i++) {
+            if (dminos[i].pos.x == x && dminos[i].pos.y == y) {
+                    snake.dead = true;
+                    return; // ??
+                }
+        }
+    }
     {
         // set body
         for(let i = 1; i < snake.minos.length; i++) {
@@ -210,7 +216,6 @@ function gameTick() {
 
 	// draw a tetramino
 	let minos = tetr.minos;
-	console.log(JSON.stringify(minos));
 	for (let i = 0; i < minos.length; ++i) {
 		let {x, y} = minos[i].pos;
 		set_grid(y, x, MINO_TYPE.ACTIVE);
