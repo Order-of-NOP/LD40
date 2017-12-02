@@ -79,13 +79,41 @@ const ST = {
 	OVER: 2
 };
 
+// ATTENTION
+// the first coordinate is Y
+// it's faster to remove lines
+let grid[SIZE.H][SIZE.W];
+let snake;
+
 function newGame() {
+	// it's just a prototype, folks!
+	let dirs_to_mino_type = (dir) => {
+		switch (dir) {
+		}
+	};
+	let head_type = {
+		 DIRS.LEFT: MINO_TYPE.HEAD_L,
+		 DIRS.RIGHT: MINO_TYPE.HEAD_R,
+		 DIRS.UP: MINO_TYPE.HEAD_U,
+		 DIRS.DOWN: MINO_TYPE.HEAD_D
+	};
 	// time's atom
 	let clk_time = 500;
 
+	// setup clock timer
 	let clk = g.t.clk;
 	clk = game.time.create(false);
 	clk.loop(clk_time, gameTick, this);
+
+	// wipe whole the grid
+	for (let r = 0; r < grid.length; ++r) {
+		for (let c = 0; c < grid[r].length; ++c) {
+			grid[r][c] = MINO_TYPE.EMPTY;
+		}
+	}
+
+	// init all the stuff
+	snake = new Snake();
 
 	// when all done, start a timer
 	clk.start();
@@ -93,6 +121,13 @@ function newGame() {
 
 // main game tick
 function gameTick() {
+	// TODO remove the debug thing
 	g.g.thing.x += 32;
+
+	// heading snake to the right direction
+	let {x, y} = snake.get_head().pos;
+	grid[y][x] = head_type[snake.dir];
+	{x, y} = snake.get_tail().pos;
+	// TODO ...
 }
 
