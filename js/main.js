@@ -17,7 +17,8 @@ let g = {
 */
 let input;
 
-const SIZE = {H: 10, W: 15};
+const SIZE = {H: 18, W: 24};
+const TILE_SIZE = 32;
 const MINO_TYPE = {
 	EMPTY: 0,
 	SNAKE: 1,
@@ -37,6 +38,7 @@ const MINO_TYPE = {
 	DEAD: 10
 };
 
+const sprite_grid = make_grid(SIZE.H, SIZE.W);
 
 function init() {
 	const config = {
@@ -58,7 +60,8 @@ function init() {
 
 function preload() {
 	// load all the sprites, fonts and other stuff
-	game.load.image('thing', '../img/thing.png');
+	//game.load.image('thing', '../img/thing.png');
+	game.load.spritesheet('sheet', '../img/sheet.png', TILE_SIZE, TILE_SIZE);
 }
 
 function create() {
@@ -66,9 +69,6 @@ function create() {
 	document.querySelector('canvas').oncontextmenu
 		= function() { return false; };
 	game.world.setBounds(0, 0, 800, 600);
-
-	// TODO remove this debug thing
-	g.g.thing = game.add.sprite(64, 64, 'thing');
 
 	//game.physics.enable(g.g.pl);
 	input = [
@@ -80,12 +80,25 @@ function create() {
 }
 
 function update() {
+    // input for snake
+    if (input[PL.SNK].up.isDown) {
+        snake.dir = MINO_TYPE.HEAD_U;
+    } else if (input[PL.SNK].down.isDown) {
+        snake.dir = MINO_TYPE.HEAD_D;
+    } else if (input[PL.SNK].right.isDown) {
+        snake.dir = MINO_TYPE.HEAD_R;
+    } else if (input[PL.SNK].left.isDown) {
+        snake.dir = MINO_TYPE.HEAD_L;
+    }
+}
+
+function render() {
 	// doesn't work -_-
 	if (g.t.clk) {
 		game.debug.text(`Clk: ${g.t.clk.next}`, 32, 128);
 	}
 }
 
-function render() {
-
+function make_grid(n, m) {
+	return new Array(n).fill(null).map(row => new Array(m).fill(null));
 }
