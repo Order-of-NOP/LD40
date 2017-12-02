@@ -82,13 +82,24 @@ function create() {
 function update() {
     // input for snake
     if (input[PL.SNK].up.isDown) {
-        snake.dir = MINO_TYPE.HEAD_U;
+
+		if (snake.dir != MINO_TYPE.HEAD_D) 
+			snake.dir = MINO_TYPE.HEAD_U;
+		
     } else if (input[PL.SNK].down.isDown) {
-        snake.dir = MINO_TYPE.HEAD_D;
+
+		if (snake.dir != MINO_TYPE.HEAD_U)
+			snake.dir = MINO_TYPE.HEAD_D;
+
     } else if (input[PL.SNK].right.isDown) {
-        snake.dir = MINO_TYPE.HEAD_R;
+
+		if (snake.dir != MINO_TYPE.HEAD_L)
+			snake.dir = MINO_TYPE.HEAD_R;
+
     } else if (input[PL.SNK].left.isDown) {
-        snake.dir = MINO_TYPE.HEAD_L;
+		
+		if (snake.dir != MINO_TYPE.HEAD_R)
+			snake.dir = MINO_TYPE.HEAD_L;
     }
 }
 
