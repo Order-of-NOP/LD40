@@ -6,6 +6,9 @@ class Mino {
 	constructor(pos) {
 		this.pos = pos;
 	}
+	down(){
+		this.pos.y++;
+	}
 };
 
 class Tetramino {

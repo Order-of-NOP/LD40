@@ -73,7 +73,12 @@ function create() {
 	//game.physics.enable(g.g.pl);
 	input = [
 		game.input.keyboard.createCursorKeys(),
-		null
+		{
+			up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+			down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+			left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+			right: game.input.keyboard.addKey(Phaser.Keyboard.D),
+		}
 	];
 
 	newGame();
@@ -100,7 +105,17 @@ function update() {
 		
 		if (snake.dir != MINO_TYPE.HEAD_R)
 			snake.dir = MINO_TYPE.HEAD_L;
-    }
+	}
+	// input for tetris
+	if (input[PL.TRS].up.isDown) {
+		console.log('player2 press up');
+	} else if (input[PL.TRS].down.isDown) {
+		console.log('player2 press down');
+	} else if (input[PL.TRS].right.isDown) {
+		console.log('player2 press right');
+	} else if (input[PL.TRS].left.isDown) {
+		console.log('player2 press left');
+	}
 }
 
 function render() {
