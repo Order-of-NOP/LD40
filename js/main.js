@@ -11,6 +11,11 @@ let g = {
 		clk: null,
 	}
 }
+/* input for players:
+	input[0] - snake,
+	input[1] - tetris
+*/
+let input;
 
 const SIZE = {H: 10, W: 15};
 const MINO_TYPE = {
@@ -65,6 +70,10 @@ function create() {
 	g.g.thing = game.add.sprite(64, 64, 'thing');
 
 	//game.physics.enable(g.g.pl);
+	input = [
+		game.input.keyboard.createCursorKeys(),
+		null
+	];
 
 	newGame();
 }
