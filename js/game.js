@@ -14,11 +14,13 @@ class Snake
      * 
      * @param {number} x 
      * @param {number} y 
-     * @param {string} color 
      */
-    constructor(x, y, color) {
-        v = validate(x, y, color)
-        this.Minos = [new Mino(v.pos, v.color)];
+    constructor(x, y) {
+        v = validate(x, y)
+        this.Minos = [
+            new Mino(v.pos),
+            new Mino({x: v.pos.x + 1, y: v.pos.y})
+        ];
         // current dir
         this.dir = 'down';
         this.dirs = { 
@@ -32,27 +34,24 @@ class Snake
      * 
      * @param {number} x 
      * @param {number} y 
-     * @param {string} color 
      */
-    valid_set(x, y, color){
+    valid_set(x, y){
         return {
             pos: {
                 x: x == null ? 0 : x,
                 y: y == null ? 0 : y
             },
-            color: color == null ? '#000' : color,
-            valid: x == null || y == null || color == null
+            valid: x == null || y == null 
         }
     }
     /** add_mino
      * 
      * @param {{x:number, y:number}} pos 
-     * @param {string} color 
      */
-    add_mino(pos, color) {
-        v = validate(x, y, color)
+    add_mino(pos) {
+        v = validate(x, y)
         if (v.valid) 
-            this.Minos.push(new Mino(v.pos, v.color))
+            this.Minos.push(new Mino(v.pos))
     }
     // get the first mino
     get_head() { return this.Minos[0]; }
@@ -101,6 +100,7 @@ function newGame() {
 	// when all done, start a timer
 	clk.start();
 }
+
 // main game tick
 function gameTick() {
     g.g.thing.x += 32;
