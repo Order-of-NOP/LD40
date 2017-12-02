@@ -97,7 +97,9 @@ const DIRS = {
 };
 
 function newGame() {
-    let clk_time = 500;
+	// time's atom
+	let clk_time = 500;
+
 	let clk = g.t.clk;
 	clk = game.time.create(false);
 	clk.loop(clk_time, gameTick, this);
