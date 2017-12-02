@@ -32,10 +32,10 @@ const MINO_TYPE = {
 	STILL: 7,
 	// unremovable minos
 	HEAVY: 8,
-	// snake food
-	FRUIT: 9,
 	// dead snake
-	DEAD: 10
+	DEAD: 9,
+	// snake food
+	FRUIT: 10
 };
 
 const sprite_grid = make_grid(SIZE.H, SIZE.W);
