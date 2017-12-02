@@ -113,7 +113,7 @@ function newGame() {
 
 	// init all the stuff
 	snake = new Snake();
-	tetr = new Tetramino('i', 10, 10);
+	tetr = new Tetramino('i', new Mino({x: 4, y: 4}));
 
 	// when all done, start a timer
 	clk.start();
@@ -143,10 +143,9 @@ function gameTick() {
 
 	// draw a tetramino
 	let minos = tetr.minos;
-	console.log(JSON.stringify(minos));
 	for (let i = 0; i < minos.length; ++i) {
 		let {x, y} = minos[i].pos;
 		set_grid(y, x, MINO_TYPE.ACTIVE);
 	}
-	tetr.change_pos(tetr.rotate());
+	tetr.set_pos(tetr.rotate());
 }
