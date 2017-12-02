@@ -3,10 +3,11 @@ let game;
 let g = {
 	// g for graphics
 	g: {
-		lvl: null,
-		circ: null,
-		pl: null,
-		pl_pt: null
+		thing: null
+	},
+	// t for time
+	t: {
+		clk: null,
 	}
 }
 
@@ -30,6 +31,7 @@ function init() {
 
 function preload() {
 	// load all the sprites, fonts and other stuff
+	game.load.image('thing', '../img/thing.png');
 }
 
 function create() {
@@ -38,10 +40,7 @@ function create() {
 		= function() { return false; };
 	game.world.setBounds(0, 0, 800, 600);
 
-	//g.g.lvl = game.add.graphics();
-	//g.g.circ = game.add.graphics();
-	//g.g.pl = game.add.graphics();
-	//g.g.pl_pt = game.add.graphics();
+	g.g.thing = game.add.sprite(64, 64, 'thing');
 
 	//game.physics.enable(g.g.pl);
 
@@ -49,6 +48,9 @@ function create() {
 }
 
 function update() {
+	if (g.t.clk) {
+		game.debug.text(`Clk: ${g.t.clk.next}`, 32, 128);
+	}
 }
 
 function render() {
