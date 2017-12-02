@@ -7,6 +7,7 @@ class Snake
      */
     constructor(x, y) {
         let v = this.valid_set(x, y);
+        this.dead = false;
         this.minos = [
             new Mino(v.pos),
             new Mino({x: v.pos.x + 1, y: v.pos.y}),
@@ -15,7 +16,7 @@ class Snake
         ];
         // current dir
         // WARNING!!! dir from 2 to 5
-        this.dir = 4;
+        this.dir = 3;
         this.dirs = [
             null,
             null,
@@ -77,6 +78,9 @@ const ST = {
 let grid = make_grid(SIZE.H, SIZE.W);
 
 let snake;
+// destroyed snakes
+let dminos = [];
+
 let tetr;
 
 // Player
@@ -116,8 +120,8 @@ function newGame() {
 
 	// init all the stuff
 	snake = new Snake(5, 5);
-	tetr = new Tetramino('i', 10, 10);
-
+    tetr = new Tetramino('i', 10, 10);
+    dminos = [];
 	// when all done, start a timer
 	clk.start();
 }
@@ -125,11 +129,21 @@ function newGame() {
 /* sets states in both grid and sprite_grid */
 // TODO investigate, do we really need `grid`
 function set_grid(y, x, type) {
+    console.log(y,x,type);
 	if (typeof(type) !== 'number') console.warn(`'${type}' is not a number.`);
 	grid[y][x] = type;
 	sprite_grid[y][x].play(type.toString());
 }
 
+function head_in_grid(head_pos) {
+    return (head_pos.x > 0 && head_pos.x < SIZE.W - 1
+        && head_pos.y > 0 && head_pos.y < SIZE.H - 1);
+}
+
+function dead_in_grid(mino_pos) {
+    return (mino_pos.x > -1 && mino_pos.x < SIZE.W
+        && mino_pos.y > -1 && mino_pos.y < SIZE.H-1);
+}
 // main game tick
 function gameTick() {
     // heading snake to the right direction
@@ -138,8 +152,51 @@ function gameTick() {
         let {x, y} = snake.get_tail().pos;
         set_grid(y, x, MINO_TYPE.EMPTY);
     }
-    // move
-    snake.move();
+    // snake alive
+    if (!snake.dead) {
+        console.log('alive')
+        // snake in grid
+        if (head_in_grid(snake.get_head().pos)) {
+            snake.move();
+        } else {
+           snake.dead = true;
+        }
+    } else {
+        // dead snake and clear
+        for(let i = 0; i < snake.minos.length; i++) {
+            dminos.push(snake.minos[i]);
+            set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
+        }
+        // do set from arr
+        // unique dminos
+        tmp_minos = [];
+        for (let i = 0; i < dminos.length; i++) {
+            let f = false;
+            for (let j = 0; j < tmp_minos.length; j++){
+                if(tmp_minos[j].pos.x == dminos[i].pos.x &&
+                    tmp_minos[j].pos.y == dminos[i].pos.y) {
+                    f = true;
+                    break;
+                }
+            }
+            if(!f)
+                tmp_minos.push(dminos[i]);
+        }
+        dminos = tmp_minos;
+        snake = new Snake(5, 5);
+    }
+    
+    // set dminos
+    for(let i = 0; i < dminos.length; i++) {
+        if(dead_in_grid(dminos[i].pos) && 
+        grid[dminos[i].pos.y+1][dminos[i].pos.x] == MINO_TYPE.EMPTY) {
+            set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
+            dminos[i].down();
+        }
+        set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.DEAD);
+    }
+    // check collision snake with dminos
+    // TODO ...
     {
         // set body
         for(let i = 1; i < snake.minos.length; i++) {
@@ -150,7 +207,6 @@ function gameTick() {
         let {x, y} = snake.get_head().pos;
         set_grid(y, x, snake.dir);
     }
-
 
 	// draw a tetramino
 	let minos = tetr.minos;
