@@ -3,6 +3,7 @@ let game;
 let g = {
 	// g for graphics
 	g: {
+		// TODO remove this debug thing
 		thing: null
 	},
 	// t for time
@@ -10,6 +11,31 @@ let g = {
 		clk: null,
 	}
 }
+/* input for players:
+	input[0] - snake,
+	input[1] - tetris
+*/
+let input;
+
+const SIZE = {H: 10, W: 15};
+const MINO_TYPE = {
+	EMPTY: 0,
+	SNAKE: 1,
+	HEAD_U: 2,
+	HEAD_D: 3,
+	HEAD_L: 4,
+	HEAD_R: 5,
+	// for controllable tetramino
+	ACTIVE: 6,
+	// just minos
+	STILL: 7,
+	// unremovable minos
+	HEAVY: 8,
+	// snake food
+	FRUIT: 9,
+	// dead snake
+	DEAD: 10
+};
 
 
 function init() {
@@ -41,14 +67,20 @@ function create() {
 		= function() { return false; };
 	game.world.setBounds(0, 0, 800, 600);
 
+	// TODO remove this debug thing
 	g.g.thing = game.add.sprite(64, 64, 'thing');
 
 	//game.physics.enable(g.g.pl);
+	input = [
+		game.input.keyboard.createCursorKeys(),
+		null
+	];
 
 	newGame();
 }
 
 function update() {
+	// doesn't work -_-
 	if (g.t.clk) {
 		game.debug.text(`Clk: ${g.t.clk.next}`, 32, 128);
 	}
