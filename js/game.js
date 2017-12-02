@@ -55,6 +55,7 @@ class Tetramino
 		}
 	}
 };
+
 class Snake
 {
     /** init
@@ -128,7 +129,8 @@ const ST = {
 // ATTENTION
 // the first coordinate is Y
 // it's faster to remove lines
-let grid = new Array(SIZE.H,SIZE.W);
+let grid = make_grid(SIZE.H, SIZE.W);
+
 let snake;
 
 // Player
@@ -155,6 +157,14 @@ function newGame() {
 	for (let r = 0; r < grid.length; ++r) {
 		for (let c = 0; c < grid[r].length; ++c) {
 			grid[r][c] = MINO_TYPE.EMPTY;
+			sprite_grid[r][c] = game.add.sprite(c*TILE_SIZE, r*TILE_SIZE,
+				'sheet');
+			for (let i in MINO_TYPE) {
+				// TODO when real animation starts, you will shit bricks
+				sprite_grid[r][c].animations.add(MINO_TYPE[i].toString(),
+					[MINO_TYPE[i]], 0, true);
+			}
+			sprite_grid[r][c].play(MINO_TYPE.EMPTY.toString());
 		}
 	}
 
@@ -165,29 +175,23 @@ function newGame() {
 	clk.start();
 }
 
+/* sets states in both grid and sprite_grid */
+// TODO investigate, do we really need `grid`
+function set_grid(y, x, type) {
+	if (typeof(type) !== 'number') console.warn(`'${type}' is not a number.`);
+	grid[y][x] = type;
+	sprite_grid[y][x].play(type.toString());
+}
+
 // main game tick
 function gameTick() {
-	// TODO remove the debug thing
-	g.g.thing.x += 32;
-
     // heading snake to the right direction
+	// TODO move head
     {
         let {x, y} = snake.get_head().pos;
         // snake.dir supposed to be of MINO_TYPEs
-        grid[y][x] = snake.dir;
+		set_grid(y, x, snake.dir);
     }
 	let {x, y} = snake.get_tail().pos;
-	// TODO ...
-
-    // input for snake
-    if (input[PL.SNK].up.isDown) {
-        snake.dir = MINO_TYPE.HEAD_U;
-    } else if (input[PL.SNK].down.isDown) {
-        snake.dir = MINO_TYPE.HEAD_D;
-    } else if (input[PL.SNK].right.isDown) {
-        snake.dir = MINO_TYPE.HEAD_R;
-    } else if (input[PL.SNK].left.isDown) {
-        snake.dir = MINO_TYPE.HEAD_L;
-    }
-
+	set_grid(y, x, MINO_TYPE.SNAKE);
 }
