@@ -1,124 +1,65 @@
-class Mino {
-    /** Mino
-     *
-     * @param {{x:number, y:number}} pos
-     */
-    constructor(pos) {
-        this.pos = pos;
-    }
-};
-
-// TODO move to another file
-class Tetramino
-{
-	constructor(shape, init_pos_x, init_pos_y) {
-		this.shape = shape; // Figure shape status from set {i, o, z, t, l, s}.
-		switch(shape) {
-			case 'i':
-				this.minos = [
-				new Mino({x : init_pos_x, y : init_pos_y}),
-				new Mino({x : init_pos_x + 1, y : init_pos_y}),
-				new Mino({x : init_pos_x + 2, y : init_pos_y}),
-				new Mino({x : init_pos_x + 3, y : init_pos_y}),
-				]
-				break;
-		}
-
-		this.rotate = 0; // Rotate status from set {0, 1, 2, 3}.
-	}
-
-	next_pos() {
-		for (let i = 0; i < this.minos.length; i++) {
-			this.minos[i].y++;
-		}
-	}
-
-	change_pos(new_pos) {
-		for (let i = 0; i < this.minos.length; i++) {
-			this.minos[i].x = new_pos[i].x;
-			this.minos[i].y = new_pos[i].y;
-		}
-	}
-
-	rotate() {
-		switch(this.shape) {
-			case 'i':
-				switch(this.rotate) {
-					case 0:
-						this.minos[0].x = this.minos[2].x;
-						this.minos[1].x = this.minos[2].x;
-						this.minos[3].x = this.minos[2].x;
-						this.minos[0].y = this.minos[2].y - 2;	
-						this.minos[1].y = this.minos[2].y - 1;	
-						this.minos[3].y = this.minos[2].y + 1;	
-						break;
-				}
-		}
-	}
-};
-
 class Snake
 {
-    /** init
-     *
-     * @param {number} x
-     * @param {number} y
-     */
-    constructor(x, y) {
-        let v = this.valid_set(x, y)
-        this.Minos = [
-            new Mino(v.pos),
-            new Mino({x: v.pos.x + 1, y: v.pos.y})
-        ];
-        // current dir
-        this.dir = 2;
-        this.dirs = [
-            { x: -1, y: 0 },
-            { x: 1, y: 0 },
-            { x: 0, y: -1 },
-            { x: 0, y: 1 }
-        ];
-    }
-    /** valid_set
-     *
-     * @param {number} x
-     * @param {number} y
-     */
-    valid_set(x, y){
-        return {
-            pos: {
-                x: x == null ? 0 : x,
-                y: y == null ? 0 : y
-            },
-            valid: x == null || y == null
-        }
-    }
-    /** add_mino
-     *
-     * @param {{x:number, y:number}} pos
-     */
-    add_mino(pos) {
-        let v = this.valid_set(x, y)
-        if (v.valid)
-            this.Minos.push(new Mino(v.pos))
-    }
-    // get the first mino
-    get_head() { return this.Minos[0]; }
-    // get the last mino
-    get_tail() { return this.Minos[this.Minos.length - 1] }
+	/** init
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	constructor(x, y) {
+		let v = this.valid_set(x, y)
+		this.Minos = [
+			new Mino(v.pos),
+			new Mino({x: v.pos.x + 1, y: v.pos.y})
+		];
+		// current dir
+		this.dir = 2;
+		this.dirs = [
+			{ x: -1, y: 0 },
+			{ x: 1, y: 0 },
+			{ x: 0, y: -1 },
+			{ x: 0, y: 1 }
+		];
+	}
+	/** valid_set
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	valid_set(x, y){
+		return {
+			pos: {
+				x: x == null ? 0 : x,
+				y: y == null ? 0 : y
+			},
+			valid: x == null || y == null
+		}
+	}
+	/** add_mino
+	 *
+	 * @param {{x:number, y:number}} pos
+	 */
+	add_mino(pos) {
+		let v = this.valid_set(x, y)
+		if (v.valid)
+			this.Minos.push(new Mino(v.pos))
+	}
+	// get the first mino
+	get_head() { return this.Minos[0]; }
+	// get the last mino
+	get_tail() { return this.Minos[this.Minos.length - 1] }
 
-    move() {
-        // move mines from second to last blocks
-        for(let i = this.Minos.length; i > 0; i--) {
-            this.Minos[i].pos = this.Minos[i-1].pos
-        }
-        // move head
-        let h_pos = Minos[0].pos;
-        this.Minos[0].pos = {
-            x: h_pos.x + this.dirs[this.dir],
-            y: h_pos.y + this.dirs[this.dir]
-        }
-    }
+	move() {
+		// move mines from second to last blocks
+		for(let i = this.Minos.length; i > 0; i--) {
+			this.Minos[i].pos = this.Minos[i-1].pos
+		}
+		// move head
+		let h_pos = Minos[0].pos;
+		this.Minos[0].pos = {
+			x: h_pos.x + this.dirs[this.dir],
+			y: h_pos.y + this.dirs[this.dir]
+		}
+	}
 }
 // ST for states
 const ST = {
@@ -137,8 +78,8 @@ let tetr;
 
 // Player
 const PL = {
-    SNK: 0,
-    TRS: 1
+	SNK: 0,
+	TRS: 1
 }
 
 function newGame() {
@@ -188,15 +129,24 @@ function set_grid(y, x, type) {
 
 // main game tick
 function gameTick() {
-    // heading snake to the right direction
+	// heading snake to the right direction
 	// TODO move head
-    {
-        let {x, y} = snake.get_head().pos;
-        // snake.dir supposed to be of MINO_TYPEs
+	{
+		let {x, y} = snake.get_head().pos;
+		// snake.dir supposed to be of MINO_TYPEs
 		set_grid(y, x, snake.dir);
-    }
+	}
 	{
 		let {x, y} = snake.get_tail().pos;
 		set_grid(y, x, MINO_TYPE.SNAKE);
 	}
+
+	// draw a tetramino
+	let minos = tetr.minos;
+	console.log(JSON.stringify(minos));
+	for (let i = 0; i < minos.length; ++i) {
+		let {x, y} = minos[i].pos;
+		set_grid(y, x, MINO_TYPE.ACTIVE);
+	}
+	tetr.change_pos(tetr.rotate());
 }
