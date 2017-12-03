@@ -211,6 +211,29 @@ function gameTick() {
 							snake.add_mino({x:xt, yt: yt+1});
 						}
 					}
+				} else {
+					switch(snake.dir){
+						case MINO_TYPE.HEAD_U:
+							if (y < SIZE.H -1 )
+								if (grid[y+1][x] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+						case MINO_TYPE.HEAD_L:
+							if (x > 0 )
+								if (grid[y][x-1] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+						case MINO_TYPE.HEAD_D:
+							if (y > 0)
+								if (grid[y-1][x] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+						case MINO_TYPE.HEAD_R:
+							if (x < SIZE.W - 1)
+								if (grid[y][x+1] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+					}
 				}
 			} // speed check
 		} else {
@@ -253,19 +276,6 @@ function gameTick() {
 			}
 		}
 	}
-	/*
-		// snake eat self
-	if(snake.length > 2) 
-	{	// check snake eat self
-		let i = s_in_s_check(snake.minos);
-		if (i > 0) {
-			let tmp = snake.minos.slice(i, snake.minos.length);
-			for(let i = 0; i < tmp.length; i++) {
-				dminos.push(tmp[i]);
-			}
-			snake.minos = snake.minos.slice(0, i-1);
-		}
-	}*/
 
 	// set dminos
 	for(let i = 0; i < dminos.length; i++) {
@@ -284,11 +294,17 @@ function gameTick() {
 				snake.dead = true;
 			}
 		}
+
 		// check collision with hard food
 		for(let i = 0; i < h_fruit.length; i++) {
 			if (h_fruit[i].pos.x == x && h_fruit[i].pos.y == y) {
 				snake.dead = true;
 			}
+		}
+		
+		// check collision with main
+		if(grid[y][x] == MINO_TYPE.STILL){
+			snake.dead = true;
 		}
 	}
 	{
@@ -435,8 +451,14 @@ function line_complete(y) {
 // TODO: add conditions.
 function remove_line(y) {
 	for (let i = 0; i < grid[y].length; ++i) {
-		//if (grid[y][i].MINO_TYPE !==
-		set_grid(y, i, MINO_TYPE.EMPTY);
+		if (grid[y][i] = MINO_TYPE.DEAD) {
+			let dead_index = dminos.indexOf(new Mino({x: i, y: y}));
+			dminos.splice(dead_index, 1);
+			set_grid(y, i, MINO_TYPE.EMPTY);
+		}
+		else if ([MINO_TYPE.HEAVY].indexOf(grid[y][i]) == -1) {
+			set_grid(y, i, MINO_TYPE.EMPTY);
+		}
 	}
 }
 
