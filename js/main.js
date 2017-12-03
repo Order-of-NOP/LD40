@@ -37,6 +37,12 @@ const MINO_TYPE = {
 	// snake food
 	FRUIT: 10
 };
+// reltive speed values
+const SPEED = {
+	SNAKE: 2,
+	TETR_BOOST: 3,
+	TETR: 6
+}
 
 const sprite_grid = make_grid(SIZE.H, SIZE.W);
 
@@ -108,22 +114,25 @@ function update() {
 	}
 	// input for tetris
 	// TODO check returned by a tetr.move array of minos first 
+	let new_minos = null;
 	if (input[PL.TRS].up.justReleased()) {
-		erase(tetr.minos);
-		tetr.set_pos(tetr.rotate());
-		activate(tetr.minos);
-	} else if (input[PL.TRS].down.justReleased()) {
-		erase(tetr.minos);
-		tetr.set_pos(tetr.move("down"));
-		activate(tetr.minos);
+		new_minos = tetr.rotate();
 	} else if (input[PL.TRS].right.justReleased()) {
-		erase(tetr.minos);
-		tetr.set_pos(tetr.move("right"));
-		activate(tetr.minos);
+		new_minos = tetr.move("right");
 	} else if (input[PL.TRS].left.justReleased()) {
-		erase(tetr.minos);
-		tetr.set_pos(tetr.move("left"));
-		activate(tetr.minos);
+		new_minos = tetr.move("left");
+	}
+	if (input[PL.TRS].down.isDown) {
+		if (!tetr.boost) tetr.boost = true;
+	} else {
+		if (tetr.boost) tetr.boost = false;
+	}
+	if (new_minos !== null) {
+		if (check_bounds(new_minos)) {
+			erase(tetr.minos);
+			tetr.set_pos(new_minos);
+			activate(tetr.minos);
+		}
 	}
 }
 
@@ -136,4 +145,8 @@ function render() {
 
 function make_grid(n, m) {
 	return new Array(n).fill(null).map(row => new Array(m).fill(null));
+}
+
+function max_in_arr(numArray) {
+	return Math.max.apply(null, numArray);
 }
