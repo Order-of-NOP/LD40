@@ -12,7 +12,6 @@ class Snake
 			new Mino(v.pos),
 			new Mino({x: v.pos.x + 1, y: v.pos.y}),
 			new Mino({x: v.pos.x + 2, y: v.pos.y}),
-			new Mino({x: v.pos.x + 3, y: v.pos.y})
 		];
 		// current dir
 		// WARNING!!! dir from 2 to 5
@@ -133,7 +132,7 @@ function newGame() {
 	}
 
 	// init all the stuff
-	snake = new Snake(5, 5);
+	snake = new Snake(2, 1);
 	tetr = spawn_tetr();
 
 	// when all done, start a timer
@@ -237,7 +236,20 @@ function gameTick() {
 				tmp_minos.push(dminos[i]);
 		}
 		dminos = tmp_minos;
-		snake = new Snake(5, 5);
+		// respawn snake
+		for (let y = 1; y < SIZE.H; ++y) {
+			let t = true;
+			for(let x = 2; x < SIZE.W-3; x++) {
+				if (grid[y][x] == MINO_TYPE.EMPTY
+					&& grid[y][x+1] == MINO_TYPE.EMPTY
+					&& grid[y][x+2] == MINO_TYPE.EMPTY) {
+					snake = new Snake(x, 1);
+					t = false;
+					break;
+				}
+				if (!false) break;
+			}
+		}
 	}
 	/*
 		// snake eat self
@@ -271,7 +283,14 @@ function gameTick() {
 				snake.dead = true;
 			}
 		}
+		// check collision with hard food
+		for(let i = 0; i < h_fruit.length; i++) {
+			if (h_fruit[i].pos.x == x && h_fruit[i].pos.y == y) {
+				snake.dead = true;
+			}
+		}
 	}
+	// ...
 	{
 		// set body
 		for(let i = 1; i < snake.minos.length; i++) {
