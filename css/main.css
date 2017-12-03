@@ -6,7 +6,8 @@ html {
 }
 
 body {
-	background: #121212;
+	/*background: #121212;*/
+	background: #666;
 }
 
 canvas {
@@ -20,7 +21,7 @@ canvas {
 }
 
 #game {
-	width: 800px;
+	width: 768px;
 	margin: 0 auto;
 	box-shadow: 16px 16px 32px 0px rgba(0,0,0,0.8);
 }
