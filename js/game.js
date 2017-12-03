@@ -119,7 +119,7 @@ function newGame() {
 	}
   
 	// init all the stuff
-	//snake = new Snake(5, 5);
+	snake = new Snake(5, 5);
 	tetr = spawn_tetr();
 
   // when all done, start a timer
@@ -151,7 +151,7 @@ function spawn_tetr() {
 
 // main game tick
 function gameTick() {
-	/*
+	
     // heading snake to the right direction
     {
         // clear tail
@@ -220,7 +220,7 @@ function gameTick() {
         let {x, y} = snake.get_head().pos;
         set_grid(y, x, snake.dir);
     }
-    */
+    
 	for (let i = 0; i < SIZE.H; i++) {
 		if (line_complete(i)) {
 			remove_line(i);
