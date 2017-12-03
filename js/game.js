@@ -1,79 +1,79 @@
 class Snake
 {
-    /** init
-     *
-     * @param {number} x
-     * @param {number} y
-     */
-    constructor(x, y) {
-        let v = this.valid_set(x, y);
-        this.dead = false;
-        this.minos = [
-            new Mino(v.pos),
-            new Mino({x: v.pos.x + 1, y: v.pos.y}),
-            new Mino({x: v.pos.x + 2, y: v.pos.y}),
-            new Mino({x: v.pos.x + 3, y: v.pos.y})
-        ];
-        // current dir
-        // WARNING!!! dir from 2 to 5
-        this.dir = 3;
-        this.dirs = [
-            null,
-            null,
-            { x: 0, y: -1 },
-            { x: 0, y: 1 },
-            { x: -1, y: 0 },
-            { x: 1, y: 0 }
-        ];
-    }
+	/** init
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	constructor(x, y) {
+		let v = this.valid_set(x, y);
+		this.dead = false;
+		this.minos = [
+			new Mino(v.pos),
+			new Mino({x: v.pos.x + 1, y: v.pos.y}),
+			new Mino({x: v.pos.x + 2, y: v.pos.y}),
+			new Mino({x: v.pos.x + 3, y: v.pos.y})
+		];
+		// current dir
+		// WARNING!!! dir from 2 to 5
+		this.dir = 3;
+		this.dirs = [
+			null,
+			null,
+			{ x: 0, y: -1 },
+			{ x: 0, y: 1 },
+			{ x: -1, y: 0 },
+			{ x: 1, y: 0 }
+		];
+	}
 
-    get_head() { return this.minos[0]; }
-    get_tail() { return this.minos[this.minos.length - 1]}
-    /** valid_set
-     *
-     * @param {number} x
-     * @param {number} y
-     */
-    valid_set(x, y){
-        return {
-            pos: {
-                x: x == null ? 0 : x,
-                y: y == null ? 0 : y
-            },
-            valid: x == null || y == null
-        }
-    }
-    /** add_mino
-     *
-     * @param {{x:number, y:number}} pos
-     */
-    add_mino(pos) {
-        let v = this.valid_set(pos.x, pos.y)
-        if (v.valid) 
-            this.minos.push(new Mino(v.pos))
-    }
+	get_head() { return this.minos[0]; }
+	get_tail() { return this.minos[this.minos.length - 1]}
+	/** valid_set
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	valid_set(x, y){
+		return {
+			pos: {
+				x: x == null ? 0 : x,
+				y: y == null ? 0 : y
+			},
+			valid: x == null || y == null
+		}
+	}
+	/** add_mino
+	 *
+	 * @param {{x:number, y:number}} pos
+	 */
+	add_mino(pos) {
+		let v = this.valid_set(pos.x, pos.y)
+		if (v.valid) 
+			this.minos.push(new Mino(v.pos))
+	}
 
-    move() {
-        // move mines from second to last blocks
-        for(let i = this.minos.length - 1; i > 0; i--) {
-            this.minos[i].pos.x = this.minos[i-1].pos.x;
-            this.minos[i].pos.y = this.minos[i-1].pos.y;
-        }
-        // move head
-        this.minos[0].pos.x += this.dirs[this.dir].x;
-        this.minos[0].pos.y += this.dirs[this.dir].y
+	move() {
+		// move mines from second to last blocks
+		for(let i = this.minos.length - 1; i > 0; i--) {
+			this.minos[i].pos.x = this.minos[i-1].pos.x;
+			this.minos[i].pos.y = this.minos[i-1].pos.y;
+		}
+		// move head
+		this.minos[0].pos.x += this.dirs[this.dir].x;
+		this.minos[0].pos.y += this.dirs[this.dir].y
 
-    }
+	}
 }
 // intersects check snake
 function s_in_s_check(minos) {
-    for (let i = 1; i < minos.length; i++) {
-        if (minos[0].pos.x == minos[i].pos.x
-            && minos[0].pos.y == minos[i].pos.y) {
-            return i;
-        }
-    }
-    return -1;
+	for (let i = 1; i < minos.length; i++) {
+		if (minos[0].pos.x == minos[i].pos.x
+			&& minos[0].pos.y == minos[i].pos.y) {
+			return i;
+		}
+	}
+	return -1;
 }
 // ST for states
 const ST = {
@@ -109,10 +109,6 @@ const PL = {
 
 function newGame() {
 	// it's just a prototype, folks!
-	let dirs_to_mino_type = (dir) => {
-		switch (dir) {
-		}
-	};
 	// time's atom
 	let clk_time = 100;
 
@@ -135,12 +131,12 @@ function newGame() {
 			sprite_grid[r][c].play(MINO_TYPE.EMPTY.toString());
 		}
 	}
-  
+
 	// init all the stuff
 	snake = new Snake(5, 5);
 	tetr = spawn_tetr();
 
-  // when all done, start a timer
+	// when all done, start a timer
 	clk.start();
 }
 
@@ -154,68 +150,68 @@ function set_grid(y, x, type) {
 
 /* checks if pos is in bounds of grid */
 function head_in_grid(head_pos) {
-    return (head_pos.x > 0 && head_pos.x < SIZE.W - 1
-        && head_pos.y > 0 && head_pos.y < SIZE.H - 1);
+	return (head_pos.x > 0 && head_pos.x < SIZE.W - 1
+		&& head_pos.y > 0 && head_pos.y < SIZE.H - 1);
 }
 
 function dead_in_grid(mino_pos) {
-    return (mino_pos.x > -1 && mino_pos.x < SIZE.W
-        && mino_pos.y > -1 && mino_pos.y < SIZE.H-1);
+	return (mino_pos.x > -1 && mino_pos.x < SIZE.W
+		&& mino_pos.y > -1 && mino_pos.y < SIZE.H-1);
 }
 
 function spawn_tetr() {
 	let start = new Mino({x: SIZE.W/2, y: 0});
-	return new Tetramino(game.rnd.pick('litjls'), start);
+	return new Tetramino(game.rnd.pick('litjlso'), start);
 }
 
 function get_rnd(min, max) {
-    return Math.random() * (max - min) + min;
-  }
+	return Math.random() * (max - min) + min;
+}
 
 // main game tick
 function gameTick() {
-    // heading snake to the right direction
-    {
-        // clear tail
-        let {x, y} = snake.get_tail().pos;
-        set_grid(y, x, MINO_TYPE.EMPTY);
-    }
-    // snake alive
+	// heading snake to the right direction
+	{
+		// clear tail
+		let {x, y} = snake.get_tail().pos;
+		set_grid(y, x, MINO_TYPE.EMPTY);
+	}
+	// snake alive
 	//if (false) { // for debug's sake
-    if (!snake.dead) {
-        // snake in grid
-        if (head_in_grid(snake.get_head().pos)) {
-          if (ticks % SPEED.SNAKE == 0) {
-            snake.move();
-            let {x, y} = snake.get_head().pos;
-            // snake check eat
-            if (grid[y][x] == MINO_TYPE.FRUIT) {
-                set_grid(y, x, MINO_TYPE.EMPTY);
-                let i = -1;
-                for(i = 0; i < a_fruit.length; i++) {
-					if(a_fruit[i].pos.x == x
-						&& a_fruit[i].pos.y == y)
-						break;
-				}
-				if(i == -1) {
-					console.warn('WTF!???')
-				} else {
-					a_fruit.splice(i, 1);
-					let xt = snake.get_tail().pos.x;
-					let yt = snake.get_tail().pos.y;
-					// add new Mino
-					if(grid[yt][xt-1] == MINO_TYPE.EMPTY) {
-						snake.add_mino({x:xt-1, yt: yt});
-					} else if (grid[yt][xt+1] == MINO_TYPE.EMPTY) {
-						snake.add_mino({x:xt-1, yt: yt});
-					} else if (grid[yt-1][xt] == MINO_TYPE.EMPTY) {
-						snake.add_mino({x:xt, yt: yt-1});
-					} else if (grid[yt+1][xt] == MINO_TYPE.EMPTY) {
-						snake.add_mino({x:xt, yt: yt+1});
+	if (!snake.dead) {
+		// snake in grid
+		if (head_in_grid(snake.get_head().pos)) {
+			if (ticks % SPEED.SNAKE == 0) {
+				snake.move();
+				let {x, y} = snake.get_head().pos;
+				// snake check eat
+				if (grid[y][x] == MINO_TYPE.FRUIT) {
+					set_grid(y, x, MINO_TYPE.EMPTY);
+					let i = -1;
+					for(i = 0; i < a_fruit.length; i++) {
+						if(a_fruit[i].pos.x == x
+							&& a_fruit[i].pos.y == y)
+							break;
+					}
+					if(i == -1) {
+						console.warn('WTF!???')
+					} else {
+						a_fruit.splice(i, 1);
+						let xt = snake.get_tail().pos.x;
+						let yt = snake.get_tail().pos.y;
+						// add new Mino
+						if(grid[yt][xt-1] == MINO_TYPE.EMPTY) {
+							snake.add_mino({x:xt-1, yt: yt});
+						} else if (grid[yt][xt+1] == MINO_TYPE.EMPTY) {
+							snake.add_mino({x:xt-1, yt: yt});
+						} else if (grid[yt-1][xt] == MINO_TYPE.EMPTY) {
+							snake.add_mino({x:xt, yt: yt-1});
+						} else if (grid[yt+1][xt] == MINO_TYPE.EMPTY) {
+							snake.add_mino({x:xt, yt: yt+1});
+						}
 					}
 				}
-			}
-		  } // speed check
+			} // speed check
 		} else {
 			snake.dead = true;
 		}
@@ -357,12 +353,19 @@ function gameTick() {
 			tetr = spawn_tetr();
 		}
 	}
-      // spawn eat time
-      if (ticks % SPEED.FOOD == 0) {
-        a_fruit.push(new Mino({x: get_rnd(0, SIZE.W)>>0, 
-            y: get_rnd(0, 3)>>0}));
-      }
+	// spawn eat time
+	if (ticks % SPEED.FOOD == 0) {
+		a_fruit.push(new Mino({x: get_rnd(0, SIZE.W)>>0, 
+			y: get_rnd(0, 3)>>0}));
+	}
 
+	// line removal
+	for (let i = 0; i < SIZE.H; i++) {
+		if (line_complete(i)) {
+			remove_line(i);
+			shift_upper_lines(i);
+		}
+	}
 
 	// increment ticks. Don't remove this.
 	ticks++;
@@ -391,4 +394,40 @@ function check_bounds(minos) {
 		if (!dead_in_grid(minos[i].pos)) return false;
 	}
 	return true;
+}
+
+// Return true, if line complete, false otherwise.
+function line_complete(y) {
+	is_complete = true;
+	let i = 0;
+	while (is_complete && (i < grid[y].length)) {
+		if ([MINO_TYPE.STILL, MINO_TYPE.HEAVY, MINO_TYPE.DEAD]
+			.indexOf(grid[y][i]) == -1) {
+			is_complete = false;
+		}
+		i++;
+	}
+	if (is_complete) {
+		console.log("line is complete!");
+	}
+	return is_complete;
+}
+
+// TODO: add conditions.
+function remove_line(y) {
+	for (let i = 0; i < grid[y].length; ++i) {
+		//if (grid[y][i].MINO_TYPE !==
+		set_grid(y, i, MINO_TYPE.EMPTY);
+	}
+}
+
+function shift_upper_lines(y){
+	for (let line = y; line > 0; --line) {
+		for (let i = 0; i < grid[line].length; ++i) {
+			if (grid[line - 1][i] === MINO_TYPE.STILL) {
+				set_grid(line - 1, i, MINO_TYPE.EMPTY);
+				set_grid(line, i, MINO_TYPE.STILL);
+			}
+		}
+	}
 }
