@@ -193,144 +193,139 @@ function gameTick() {
                 set_grid(y, x, MINO_TYPE.EMPTY);
                 let i = -1;
                 for(i = 0; i < a_fruit.length; i++) {
-                    if(a_fruit[i].pos.x == x
-                        && a_fruit[i].pos.y == y)
-                            break;
-                }
-                if(i == -1) {
-                    console.warn('WTF!???')
-                } else {
-                    a_fruit.splice(i, 1);
-                    let xt = snake.get_tail().pos.x;
-                    let yt = snake.get_tail().pos.y;
-                    // add new Mino
-                    if(grid[yt][xt-1] == MINO_TYPE.EMPTY) {
-                        snake.add_mino({x:xt-1, yt: yt});
-                    } else if (grid[yt][xt+1] == MINO_TYPE.EMPTY) {
-                        snake.add_mino({x:xt-1, yt: yt});
-                    } else if (grid[yt-1][xt] == MINO_TYPE.EMPTY) {
-                        snake.add_mino({x:xt, yt: yt-1});
-                    } else if (grid[yt+1][xt] == MINO_TYPE.EMPTY) {
-                        snake.add_mino({x:xt, yt: yt+1});
-                    }
-                }
-            }
-          } // speed check
-        } else {
-           snake.dead = true;
-        }
-    } else {
-        // kill snake and clear
-        for(let i = 0; i < snake.minos.length; i++) {
-            dminos.push(snake.minos[i]);
-            set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
-        }
-        // make set from arr
-        // unique dminos
-        tmp_minos = [];
-        for (let i = 0; i < dminos.length; i++) {
-            let f = false;
-            for (let j = 0; j < tmp_minos.length; j++){
-                if(tmp_minos[j].pos.x == dminos[i].pos.x &&
-                    tmp_minos[j].pos.y == dminos[i].pos.y) {
-                    f = true;
-                    break;
-                }
-            }
-            if(!f)
-                tmp_minos.push(dminos[i]);
-        }
-        dminos = tmp_minos;
-        snake = new Snake(5, 5);
-    }
-    /*
-    // snake eat self
-    if(snake.length > 2) 
-    {	// check snake eat self
-        let i = s_in_s_check(snake.minos);
-        if (i > 0) {
-            let tmp = snake.minos.slice(i, snake.minos.length);
-            for(let i = 0; i < tmp.length; i++) {
-                dminos.push(tmp[i]);
-            }
-            snake.minos = snake.minos.slice(0, i-1);
-        }
-    }*/
+					if(a_fruit[i].pos.x == x
+						&& a_fruit[i].pos.y == y)
+						break;
+				}
+				if(i == -1) {
+					console.warn('WTF!???')
+				} else {
+					a_fruit.splice(i, 1);
+					let xt = snake.get_tail().pos.x;
+					let yt = snake.get_tail().pos.y;
+					// add new Mino
+					if(grid[yt][xt-1] == MINO_TYPE.EMPTY) {
+						snake.add_mino({x:xt-1, yt: yt});
+					} else if (grid[yt][xt+1] == MINO_TYPE.EMPTY) {
+						snake.add_mino({x:xt-1, yt: yt});
+					} else if (grid[yt-1][xt] == MINO_TYPE.EMPTY) {
+						snake.add_mino({x:xt, yt: yt-1});
+					} else if (grid[yt+1][xt] == MINO_TYPE.EMPTY) {
+						snake.add_mino({x:xt, yt: yt+1});
+					}
+				}
+			}
+		  } // speed check
+		} else {
+			snake.dead = true;
+		}
+	} else {
+		// kill snake and clear
+		for(let i = 0; i < snake.minos.length; i++) {
+			dminos.push(snake.minos[i]);
+			set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
+		}
+		// make set from arr
+		// unique dminos
+		tmp_minos = [];
+		for (let i = 0; i < dminos.length; i++) {
+			let f = false;
+			for (let j = 0; j < tmp_minos.length; j++){
+				if(tmp_minos[j].pos.x == dminos[i].pos.x &&
+					tmp_minos[j].pos.y == dminos[i].pos.y) {
+					f = true;
+					break;
+				}
+			}
+			if(!f)
+				tmp_minos.push(dminos[i]);
+		}
+		dminos = tmp_minos;
+		snake = new Snake(5, 5);
+	}
+	/*
+		// snake eat self
+	if(snake.length > 2) 
+	{	// check snake eat self
+		let i = s_in_s_check(snake.minos);
+		if (i > 0) {
+			let tmp = snake.minos.slice(i, snake.minos.length);
+			for(let i = 0; i < tmp.length; i++) {
+				dminos.push(tmp[i]);
+			}
+			snake.minos = snake.minos.slice(0, i-1);
+		}
+	}*/
 	//} // TODO remove if false
-    
-    // set dminos
-    for(let i = 0; i < dminos.length; i++) {
-        if(dead_in_grid(dminos[i].pos) && 
-        grid[dminos[i].pos.y+1][dminos[i].pos.x] == MINO_TYPE.EMPTY) {
-            set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
-            dminos[i].down();
-        }
-        set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.DEAD);
-    }
-    // check collision snake with dminos
-    {
-        let {x, y} = snake.get_head().pos;
-        for(let i = 0; i < dminos.length; i++) {
-            if (dminos[i].pos.x == x && dminos[i].pos.y == y) {
-                    snake.dead = true;
-                    return; // ??
-                }
-        }
-    }
-    {
-        // set body
-        for(let i = 1; i < snake.minos.length; i++) {
-            let {x, y} = snake.minos[i].pos;
-            set_grid(y, x, MINO_TYPE.SNAKE);
-        }
-        // set head
-        let {x, y} = snake.get_head().pos;
-        set_grid(y, x, snake.dir);
-    }
-        // draw active fruits
-    {
-        //clear
-        erase(a_fruit);
-        // down
-        let tmp_a = [];
-        for(let i = 0; i < a_fruit.length; i++) {
-            let {x, y} = a_fruit[i].pos;
-            set_grid(y, x, MINO_TYPE.EMPTY);
-            // if bottom empty then fall
-            if (y < SIZE.H-1){
-                if (grid[y+1][x] == MINO_TYPE.EMPTY){
-                    a_fruit[i].down();
-                    tmp_a.push(a_fruit[i]);
-                } else {
-                    if (grid[y+1][x] == MINO_TYPE.DEAD
-                        || grid[y+1][x] == MINO_TYPE.STILL
-                        || grid[y+1][x] == MINO_TYPE.HEAVY){
-                            h_fruit.push(a_fruit[i]);
-                        } else {
-                            tmp_a.push(a_fruit[i]);
-                        }
-                }
-            } else {
-                h_fruit.push(new Mino(a_fruit[i].pos));
-            }
-        }
-        a_fruit = tmp_a;
-        // draw
-        for(let i = 0; i < a_fruit.length; i++) {
-            let {x, y} = a_fruit[i].pos;
-            set_grid(y, x, MINO_TYPE.FRUIT);
-        }
 
-    }
-       // draw heavy fruits
-       {
-        // draw
-        for(let i = 0; i < h_fruit.length; i++) {
-            let {x, y} = h_fruit[i].pos;
-            set_grid(y, x, MINO_TYPE.HEAVY);
-        }
-// TODO ???
-  }
+	// set dminos
+	for(let i = 0; i < dminos.length; i++) {
+		if(dead_in_grid(dminos[i].pos) && 
+			grid[dminos[i].pos.y+1][dminos[i].pos.x] == MINO_TYPE.EMPTY) {
+			set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
+			dminos[i].down();
+		}
+		set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.DEAD);
+	}
+	// check collision snake with dminos
+	{
+		let {x, y} = snake.get_head().pos;
+		for(let i = 0; i < dminos.length; i++) {
+			if (dminos[i].pos.x == x && dminos[i].pos.y == y) {
+				snake.dead = true;
+				return; // ??
+			}
+		}
+	}
+	{
+		// set body
+		for(let i = 1; i < snake.minos.length; i++) {
+			let {x, y} = snake.minos[i].pos;
+			set_grid(y, x, MINO_TYPE.SNAKE);
+		}
+		// set head
+		let {x, y} = snake.get_head().pos;
+		set_grid(y, x, snake.dir);
+	}
+	// draw active fruits
+	if (ticks % SPEED.FRUIT_FALL == 0) {
+		//clear
+		erase(a_fruit);
+		// down
+		let tmp_a = [];
+		for(let i = 0; i < a_fruit.length; i++) {
+			let {x, y} = a_fruit[i].pos;
+			set_grid(y, x, MINO_TYPE.EMPTY);
+			// if bottom empty then fall
+			if (y < SIZE.H-1){
+				if (grid[y+1][x] == MINO_TYPE.EMPTY){
+					a_fruit[i].down();
+					tmp_a.push(a_fruit[i]);
+				} else {
+					if (grid[y+1][x] == MINO_TYPE.DEAD
+						|| grid[y+1][x] == MINO_TYPE.STILL
+						|| grid[y+1][x] == MINO_TYPE.HEAVY){
+						h_fruit.push(a_fruit[i]);
+					} else {
+						tmp_a.push(a_fruit[i]);
+					}
+				}
+			} else {
+				h_fruit.push(new Mino(a_fruit[i].pos));
+			}
+		}
+		a_fruit = tmp_a;
+		// draw
+		for(let i = 0; i < a_fruit.length; i++) {
+			let {x, y} = a_fruit[i].pos;
+			set_grid(y, x, MINO_TYPE.FRUIT);
+		}
+	}
+	// draw
+	for(let i = 0; i < h_fruit.length; i++) {
+		let {x, y} = h_fruit[i].pos;
+		set_grid(y, x, MINO_TYPE.HEAVY);
+	}
 
 	if (ticks % (tetr.boost ? SPEED.TETR_BOOST : SPEED.TETR) == 0) {
 		// move a tetramino
@@ -364,7 +359,7 @@ function gameTick() {
 		}
 	}
       // spawn eat time
-      if (tick % SPEED.FOOD) {
+      if (ticks % SPEED.FOOD == 0) {
         a_fruit.push(new Mino({x: get_rnd(0, SIZE.W)>>0, 
             y: get_rnd(0, 3)>>0}));
       }
