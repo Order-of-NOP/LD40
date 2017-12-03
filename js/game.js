@@ -131,16 +131,6 @@ function newGame() {
 		}
 	}
 
-	// TODO debug
-	for (let i = 0; i < SIZE.W - 5; ++i) {
-		set_grid(SIZE.H - 2, i, MINO_TYPE.DEAD);
-		dminos.push(new Mino({x: i, y: SIZE.H - 2}));
-	}
-	for (let i = 0; i < SIZE.W - 1; ++i) {
-		set_grid(SIZE.H - 1, i, MINO_TYPE.DEAD);
-		dminos.push(new Mino({x: i, y: SIZE.H - 1}));
-	}
-
 	// init all the stuff
 	snake = new Snake(2, 1);
 	tetr = spawn_tetr();
@@ -284,28 +274,7 @@ function gameTick() {
 			}
 		}
 	}
-	/*
-		// snake eat self
-	if(snake.length > 2) 
-	{	// check snake eat self
-		let i = s_in_s_check(snake.minos);
-		if (i > 0) {
-			let tmp = snake.minos.slice(i, snake.minos.length);
-			for(let i = 0; i < tmp.length; i++) {
-				dminos.push(tmp[i]);
-			}
-			snake.minos = snake.minos.slice(0, i-1);
-		}
-	}*/
-	//} // TODO remove if false
-	/*if (snake.dead) {
-		let {x, y} = snake.get_head().pos;
-		let dir = snake.dir;
-		if (x == 0 && snake.dir != MINO_TYPE.HEAD_L) {
-			snake.dead = false;
-			//snake.move();
-		}
-	}*/
+
 	// set dminos
 	for(let i = 0; i < dminos.length; i++) {
 		if(dead_in_grid(dminos[i].pos) && 
