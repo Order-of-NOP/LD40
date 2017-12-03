@@ -52,8 +52,8 @@ const sprite_grid = make_grid(SIZE.H, SIZE.W);
 
 function init() {
 	const config = {
-		width: 800,
-		height: 600,
+		width: 768,
+		height: 576,
 		renderer: Phaser.AUTO,
 		parent: 'game',
 		antialias: true,
