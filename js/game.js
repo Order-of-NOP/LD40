@@ -179,7 +179,6 @@ function gameTick() {
 		snake.turn_charged = false;
 	}
 	// snake alive
-	//if (false) { // for debug's sake
 	if (!snake.dead) {
 		// snake in grid
 		if (head_in_grid(snake.get_head().pos)) {
@@ -267,7 +266,6 @@ function gameTick() {
 			snake.minos = snake.minos.slice(0, i-1);
 		}
 	}*/
-	//} // TODO remove if false
 
 	// set dminos
 	for(let i = 0; i < dminos.length; i++) {
