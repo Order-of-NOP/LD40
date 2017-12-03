@@ -98,24 +98,25 @@ function update() {
     // input for snake
     if (input[PL.SNK].up.justReleased()) {
 		// choice dir
-		if (snake.dir != MINO_TYPE.HEAD_D) {
+		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_D) {
 			snake.dir = MINO_TYPE.HEAD_U;
+			snake.turn_charged = true;
 		}
-		
     } else if (input[PL.SNK].down.justReleased()) {
-
-		if (snake.dir != MINO_TYPE.HEAD_U)
+		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_U) {
 			snake.dir = MINO_TYPE.HEAD_D;
-
+			snake.turn_charged = true;
+		}
     } else if (input[PL.SNK].right.justReleased()) {
-
-		if (snake.dir != MINO_TYPE.HEAD_L)
+		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_L) {
 			snake.dir = MINO_TYPE.HEAD_R;
-
+			snake.turn_charged = true;
+		}
     } else if (input[PL.SNK].left.justReleased()) {
-		
-		if (snake.dir != MINO_TYPE.HEAD_R)
+		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_R) {
 			snake.dir = MINO_TYPE.HEAD_L;
+			snake.turn_charged = true;
+		}
 	}
 	// input for tetris
 	// TODO check returned by a tetr.move array of minos first 

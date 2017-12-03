@@ -24,6 +24,8 @@ class Snake
 			{ x: -1, y: 0 },
 			{ x: 1, y: 0 }
 		];
+		// if snake is to turn this tick
+		this.turn_charged = false;
 	}
 
 	get_head() { return this.minos[0]; }
@@ -174,6 +176,7 @@ function gameTick() {
 		// clear tail
 		let {x, y} = snake.get_tail().pos;
 		set_grid(y, x, MINO_TYPE.EMPTY);
+		snake.turn_charged = false;
 	}
 	// snake alive
 	//if (false) { // for debug's sake
@@ -290,7 +293,6 @@ function gameTick() {
 			}
 		}
 	}
-	// ...
 	{
 		// set body
 		for(let i = 1; i < snake.minos.length; i++) {
