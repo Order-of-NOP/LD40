@@ -75,7 +75,7 @@ class Tetramino {
 			]
 		}
 		else {
-			console.warn("WARNING: invalid shape token");
+			console.warn("WARNING: Tetramino constructor: invalid shape token");
 		}
 	}
 
@@ -83,6 +83,38 @@ class Tetramino {
 		for (let i = 0; i < this.minos.length; i++) {
 			this.minos[i] = new_minos[i];
 		}
+	}
+
+	move(direction) {
+		let new_minos = [];
+		if (direction === "left") {
+			for (let i = 0; i < this.minos.length; i++) {
+				new_minos.push(new Mino({
+					x: this.minos[i].pos.x - 1,
+					y: this.minos[i].pos.y
+				}))
+			}
+		}
+		else if (direction === "right") {
+			for (let i = 0; i < this.minos.length; i++) {
+				new_minos.push(new Mino({
+					x: this.minos[i].pos.x + 1,
+					y: this.minos[i].pos.y
+				}))
+			}
+		}
+		else if (direction === "down") {
+			for (let i = 0; i < this.minos.length; i++) {
+				new_minos.push(new Mino({
+					x: this.minos[i].pos.x,
+					y: this.minos[i].pos.y + 1
+				}))
+			}
+		}
+		else {
+			console.warn("WARNING: Tetramino move: invalid direction token");
+		}
+		return new_minos;
 	}
 
 	// TODO direction selection
@@ -101,14 +133,13 @@ class Tetramino {
 			new_minos.push(new Mino({
 				x: this.minos[i].pos.x - this.minos[0].pos.x,
 				y: this.minos[i].pos.y - this.minos[0].pos.y,
-				//y: this.minos[0].pos.y - this.minos[i].pos.y
 			}))
 		}
 		// Generate new coordinates for non-center minos.
 		for (let i = 1; i < this.minos.length; i++) {
 			let old_x = new_minos[i].pos.x;
-			new_minos[i].pos.x = new_minos[i].pos.y;
-			new_minos[i].pos.y = -(old_x);
+			new_minos[i].pos.x = -(new_minos[i].pos.y);
+			new_minos[i].pos.y = old_x;
 		}
 		// Transform coordinates from local values back to global ones.
 		for (let i = 1; i < this.minos.length; i++) {
