@@ -107,21 +107,22 @@ function update() {
 			snake.dir = MINO_TYPE.HEAD_L;
 	}
 	// input for tetris
+	// TODO check returned by a tetr.move array of minos first 
 	if (input[PL.TRS].up.justReleased()) {
 		erase(tetr.minos);
 		tetr.set_pos(tetr.rotate());
 		activate(tetr.minos);
 	} else if (input[PL.TRS].down.justReleased()) {
 		erase(tetr.minos);
-		tetr.move('down');
+		tetr.set_pos(tetr.move("down"));
 		activate(tetr.minos);
 	} else if (input[PL.TRS].right.justReleased()) {
 		erase(tetr.minos);
-		tetr.move('right');
+		tetr.set_pos(tetr.move("right"));
 		activate(tetr.minos);
 	} else if (input[PL.TRS].left.justReleased()) {
 		erase(tetr.minos);
-		tetr.move('left');
+		tetr.set_pos(tetr.move("left"));
 		activate(tetr.minos);
 	}
 }
