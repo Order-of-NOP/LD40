@@ -93,10 +93,6 @@ const PL = {
 
 function newGame() {
 	// it's just a prototype, folks!
-	let dirs_to_mino_type = (dir) => {
-		switch (dir) {
-		}
-	};
 	// time's atom
 	let clk_time = 100;
 
@@ -118,6 +114,9 @@ function newGame() {
 			}
 			sprite_grid[r][c].play(MINO_TYPE.EMPTY.toString());
 		}
+	}
+	for (let i = 0; i < grid[SIZE.H - 1].length - 1; i++) {
+		set_grid(SIZE.H - 1, i, MINO_TYPE.STILL);
 	}
   
 	// init all the stuff
@@ -149,7 +148,7 @@ function dead_in_grid(mino_pos) {
 
 function spawn_tetr() {
 	let start = new Mino({x: SIZE.W/2, y: 0});
-	return new Tetramino(game.rnd.pick('litjls'), start);
+	return new Tetramino(game.rnd.pick('litjlso'), start);
 }
 
 // main game tick
@@ -162,7 +161,7 @@ function gameTick() {
         set_grid(y, x, MINO_TYPE.EMPTY);
     }
     // snake alive
-	//if (false) { // for debug's sake
+	if (false) { // for debug's sake
     if (!snake.dead) {
         // snake in grid
         if (head_in_grid(snake.get_head().pos)) {
@@ -194,7 +193,7 @@ function gameTick() {
         dminos = tmp_minos;
         snake = new Snake(5, 5);
     }
-	//} // TODO remove if false
+	} // TODO remove if false
     
     // set dminos
     for(let i = 0; i < dminos.length; i++) {
@@ -229,6 +228,7 @@ function gameTick() {
 	for (let i = 0; i < SIZE.H; i++) {
 		if (line_complete(i)) {
 			remove_line(i);
+			shift_upper_lines(i);
 		}
 	}
 
@@ -297,14 +297,30 @@ function line_complete(y) {
 		}
 		i++;
 	}
+	if (is_complete) {
+		console.log("line is complete!");
+	}
 	return is_complete;
 }
 
+// TODO: add conditions.
 function remove_line(y) {
-	for (let i = 0; i < grid[y].length; i++) {
+	for (let i = 0; i < grid[y].length; ++i) {
 		//if (grid[y][i].MINO_TYPE !== 
-		grid[y][i].MINO_TYPE = MINO_TYPE.EMPTY;
+		set_grid(y, i, MINO_TYPE.EMPTY);
 	}
+}
+
+function shift_upper_lines(y){
+	for (let line = y; line > 0; --line) {
+		for (let i = 0; i < grid[line].length; ++i) {
+			if (grid[line - 1][i] === MINO_TYPE.STILL) {
+				set_grid(line - 1, i, MINO_TYPE.EMPTY);
+				set_grid(line, i, MINO_TYPE.STILL);
+			}
+		}
+	}
+	
 }
 /* checks bounds for the list of minos */
 function check_bounds(minos) {

@@ -40,7 +40,7 @@ const MINO_TYPE = {
 // reltive speed values
 const SPEED = {
 	SNAKE: 2,
-	TETR_BOOST: 3,
+	TETR_BOOST: 1,
 	TETR: 6
 }
 
