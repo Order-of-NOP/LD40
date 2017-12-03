@@ -209,6 +209,29 @@ function gameTick() {
 							snake.add_mino({x:xt, yt: yt+1});
 						}
 					}
+				} else {
+					switch(snake.dir){
+						case MINO_TYPE.HEAD_U:
+							if (y < SIZE.H -1 )
+								if (grid[y+1][x] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+						case MINO_TYPE.HEAD_L:
+							if (x > 0 )
+								if (grid[y][x-1] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+						case MINO_TYPE.HEAD_D:
+							if (y > 0)
+								if (grid[y-1][x] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+						case MINO_TYPE.HEAD_R:
+							if (x < SIZE.W - 1)
+								if (grid[y][x+1] == MINO_TYPE.STILL)
+									snake.dead = true;
+						break;
+					}
 				}
 			} // speed check
 		} else {
@@ -265,7 +288,14 @@ function gameTick() {
 		}
 	}*/
 	//} // TODO remove if false
-
+	/*if (snake.dead) {
+		let {x, y} = snake.get_head().pos;
+		let dir = snake.dir;
+		if (x == 0 && snake.dir != MINO_TYPE.HEAD_L) {
+			snake.dead = false;
+			//snake.move();
+		}
+	}*/
 	// set dminos
 	for(let i = 0; i < dminos.length; i++) {
 		if(dead_in_grid(dminos[i].pos) && 
@@ -283,14 +313,19 @@ function gameTick() {
 				snake.dead = true;
 			}
 		}
+
 		// check collision with hard food
 		for(let i = 0; i < h_fruit.length; i++) {
 			if (h_fruit[i].pos.x == x && h_fruit[i].pos.y == y) {
 				snake.dead = true;
 			}
 		}
+		
+		// check collision with main
+		if(grid[y][x] == MINO_TYPE.STILL){
+			snake.dead = true;
+		}
 	}
-	// ...
 	{
 		// set body
 		for(let i = 1; i < snake.minos.length; i++) {
