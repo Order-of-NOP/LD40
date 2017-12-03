@@ -68,7 +68,15 @@ function init() {
 	game = new Phaser.Game(config);
 }
 
+let sounds = {
+	win: null,
+	lose: null,
+	eat: null
+}
+
 function preload() {
+	//game.load.audio('win', '../music/win.wav');
+	game.load.audio('eat', '../music/beep.wav');
 	// load all the sprites, fonts and other stuff
 	//game.load.image('thing', '../img/thing.png');
 	game.load.spritesheet('sheet', '../img/sheet.png', TILE_SIZE, TILE_SIZE);
@@ -79,7 +87,7 @@ function create() {
 	document.querySelector('canvas').oncontextmenu
 		= function() { return false; };
 	game.world.setBounds(0, 0, 800, 600);
-
+	sounds.eat = game.add.audio('eat')
 	//game.physics.enable(g.g.pl);
 	input = [
 		game.input.keyboard.createCursorKeys(),

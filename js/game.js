@@ -197,6 +197,7 @@ function gameTick() {
 					if(i == -1) {
 						console.warn('WTF!???')
 					} else {
+						sounds.eat.play();//////////////////////////
 						a_fruit.splice(i, 1);
 						let xt = snake.get_tail().pos.x;
 						let yt = snake.get_tail().pos.y;
@@ -366,8 +367,9 @@ function gameTick() {
 			let {x, y} = minos[i].pos;
 			// TODO there are some more cases
 			if (y >= SIZE.H - 1) { free_to_fall = false; break; }
-			else if (grid[y+1][x] !== MINO_TYPE.EMPTY &&
-				grid[y+1][x] !== MINO_TYPE.ACTIVE) {
+			else if (grid[y+1][x] !== MINO_TYPE.EMPTY
+				 && grid[y+1][x] !== MINO_TYPE.ACTIVE
+					&&	grid[y+1][x] !== MINO_TYPE.FRUIT ) {
 				free_to_fall = false;
 				break;
 			}
@@ -390,7 +392,7 @@ function gameTick() {
 	}
 	// spawn eat time
 	if (ticks % SPEED.FOOD == 0) {
-		a_fruit.push(new Mino({x: get_rnd(0, SIZE.W)>>0, 
+		a_fruit.push(new Mino({x: get_rnd(1, SIZE.W-1)>>0, 
 			y: get_rnd(0, 3)>>0}));
 	}
 
