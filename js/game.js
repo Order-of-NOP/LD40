@@ -109,10 +109,6 @@ const PL = {
 
 function newGame() {
 	// it's just a prototype, folks!
-	let dirs_to_mino_type = (dir) => {
-		switch (dir) {
-		}
-	};
 	// time's atom
 	let clk_time = 100;
 
@@ -134,6 +130,9 @@ function newGame() {
 			}
 			sprite_grid[r][c].play(MINO_TYPE.EMPTY.toString());
 		}
+	}
+	for (let i = 0; i < grid[SIZE.H - 1].length - 1; i++) {
+		set_grid(SIZE.H - 1, i, MINO_TYPE.STILL);
 	}
   
 	// init all the stuff
@@ -165,7 +164,7 @@ function dead_in_grid(mino_pos) {
 
 function spawn_tetr() {
 	let start = new Mino({x: SIZE.W/2, y: 0});
-	return new Tetramino(game.rnd.pick('litjls'), start);
+	return new Tetramino(game.rnd.pick('litjlso'), start);
 }
 
 function get_rnd(min, max) {
@@ -174,6 +173,7 @@ function get_rnd(min, max) {
 
 // main game tick
 function gameTick() {
+	
     // heading snake to the right direction
     {
         // clear tail
@@ -181,10 +181,69 @@ function gameTick() {
         set_grid(y, x, MINO_TYPE.EMPTY);
     }
     // snake alive
-	//if (false) { // for debug's sake
+	if (false) { // for debug's sake
     if (!snake.dead) {
         // snake in grid
         if (head_in_grid(snake.get_head().pos)) {
+            if (ticks % SPEED.SNAKE == 0) snake.move();
+        } else {
+           snake.dead = true;
+        }
+    } else {
+        // kill snake and clear
+        for(let i = 0; i < snake.minos.length; i++) {
+            dminos.push(snake.minos[i]);
+            set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
+        }
+        // make set from arr
+        // unique dminos
+        tmp_minos = [];
+        for (let i = 0; i < dminos.length; i++) {
+            let f = false;
+            for (let j = 0; j < tmp_minos.length; j++){
+                if(tmp_minos[j].pos.x == dminos[i].pos.x &&
+                    tmp_minos[j].pos.y == dminos[i].pos.y) {
+                    f = true;
+                    break;
+                }
+            }
+            if(!f)
+                tmp_minos.push(dminos[i]);
+        }
+        dminos = tmp_minos;
+        snake = new Snake(5, 5);
+    }
+	} // TODO remove if false
+    
+    // set dminos
+    for(let i = 0; i < dminos.length; i++) {
+        if(dead_in_grid(dminos[i].pos) && 
+        grid[dminos[i].pos.y+1][dminos[i].pos.x] == MINO_TYPE.EMPTY) {
+            set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
+            dminos[i].down();
+        }
+        set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.DEAD);
+    }
+    // check collision snake with dminos
+    {
+        let {x, y} = snake.get_head().pos;
+        for(let i = 0; i < dminos.length; i++) {
+            if (dminos[i].pos.x == x && dminos[i].pos.y == y) {
+                    snake.dead = true;
+                    return; // ??
+                }
+        }
+    }
+    {
+        // set body
+        for(let i = 1; i < snake.minos.length; i++) {
+            let {x, y} = snake.minos[i].pos;
+            set_grid(y, x, MINO_TYPE.SNAKE);
+        }
+        // set head
+        let {x, y} = snake.get_head().pos;
+        set_grid(y, x, snake.dir);
+    }
           if (ticks % SPEED.SNAKE == 0) {
             snake.move();
             let {x, y} = snake.get_head().pos;
@@ -257,6 +316,14 @@ function gameTick() {
 		}
 	}*/
 	//} // TODO remove if false
+
+  // Lines removal mechanic 
+	for (let i = 0; i < SIZE.H; i++) {
+		if (line_complete(i)) {
+			remove_line(i);
+			shift_upper_lines(i);
+		}
+	}
 
 	// set dminos
 	for(let i = 0; i < dminos.length; i++) {
@@ -385,6 +452,42 @@ function activate(minos) {
 	});
 }
 
+// Return true, if line complete, false otherwise.
+function line_complete(y) {
+	is_complete = true;
+	let i = 0;
+	while (is_complete && (i < grid[y].length)) {
+		if ([MINO_TYPE.STILL, MINO_TYPE.HEAVY, MINO_TYPE.DEAD]
+			.indexOf(grid[y][i]) == -1) {
+			is_complete = false;
+		}
+		i++;
+	}
+	if (is_complete) {
+		console.log("line is complete!");
+	}
+	return is_complete;
+}
+
+// TODO: add conditions.
+function remove_line(y) {
+	for (let i = 0; i < grid[y].length; ++i) {
+		//if (grid[y][i].MINO_TYPE !== 
+		set_grid(y, i, MINO_TYPE.EMPTY);
+	}
+}
+
+function shift_upper_lines(y){
+	for (let line = y; line > 0; --line) {
+		for (let i = 0; i < grid[line].length; ++i) {
+			if (grid[line - 1][i] === MINO_TYPE.STILL) {
+				set_grid(line - 1, i, MINO_TYPE.EMPTY);
+				set_grid(line, i, MINO_TYPE.STILL);
+			}
+		}
+	}
+	
+}
 /* checks bounds for the list of minos */
 function check_bounds(minos) {
 	for (let i = 0; i < minos.length; ++i) {
