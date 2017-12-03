@@ -99,6 +99,8 @@ let h_fruit = [];
 // spawn eat time
 let spawn_eat_time = SPAWN_EAT_TIME;
 
+let ticks = 0;
+
 // Player
 const PL = {
 	SNK: 0,
@@ -112,7 +114,7 @@ function newGame() {
 		}
 	};
 	// time's atom
-	let clk_time = 200;
+	let clk_time = 100;
 
 	// setup clock timer
 	let clk = g.t.clk;
@@ -150,6 +152,7 @@ function set_grid(y, x, type) {
 	sprite_grid[y][x].play(type.toString());
 }
 
+/* checks if pos is in bounds of grid */
 function head_in_grid(head_pos) {
     return (head_pos.x > 0 && head_pos.x < SIZE.W - 1
         && head_pos.y > 0 && head_pos.y < SIZE.H - 1);
@@ -178,9 +181,11 @@ function gameTick() {
         set_grid(y, x, MINO_TYPE.EMPTY);
     }
     // snake alive
+	//if (false) { // for debug's sake
     if (!snake.dead) {
         // snake in grid
         if (head_in_grid(snake.get_head().pos)) {
+          if (ticks % SPEED.SNAKE == 0) {
             snake.move();
             let {x, y} = snake.get_head().pos;
             // snake check eat
@@ -210,16 +215,17 @@ function gameTick() {
                     }
                 }
             }
+          } // speed check
         } else {
            snake.dead = true;
         }
     } else {
-        // dead snake and clear
+        // kill snake and clear
         for(let i = 0; i < snake.minos.length; i++) {
             dminos.push(snake.minos[i]);
             set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
         }
-        // do set from arr
+        // make set from arr
         // unique dminos
         tmp_minos = [];
         for (let i = 0; i < dminos.length; i++) {
@@ -250,6 +256,7 @@ function gameTick() {
             snake.minos = snake.minos.slice(0, i-1);
         }
     }*/
+	//} // TODO remove if false
     
     // set dminos
     for(let i = 0; i < dminos.length; i++) {
@@ -322,47 +329,51 @@ function gameTick() {
             let {x, y} = h_fruit[i].pos;
             set_grid(y, x, MINO_TYPE.HEAVY);
         }
+// TODO ???
+  }
 
-    }
-	// move a tetramino
-	let minos = tetr.minos;
-	// tetramino's way is free to fall
-	let free_to_fall = true;
-	for (let i = 0; i < minos.length; ++i) {
-		let {x, y} = minos[i].pos;
-		// TODO there are some more cases
-		if (y >= SIZE.H - 1) { free_to_fall = false; break; }
-		else if (grid[y+1][x] !== MINO_TYPE.EMPTY &&
-			grid[y+1][x] !== MINO_TYPE.ACTIVE) {
-			free_to_fall = false;
-			break;
+	if (ticks % (tetr.boost ? SPEED.TETR_BOOST : SPEED.TETR) == 0) {
+		// move a tetramino
+		let minos = tetr.minos;
+		// tetramino's way is free to fall
+		let free_to_fall = true;
+		for (let i = 0; i < minos.length; ++i) {
+			let {x, y} = minos[i].pos;
+			// TODO there are some more cases
+			if (y >= SIZE.H - 1) { free_to_fall = false; break; }
+			else if (grid[y+1][x] !== MINO_TYPE.EMPTY &&
+				grid[y+1][x] !== MINO_TYPE.ACTIVE) {
+				free_to_fall = false;
+				break;
+			}
+		}
+		if (free_to_fall) {
+			// three runs along minos -_-
+			erase(minos);
+			minos.forEach((it, i, arr) => {
+				arr[i].pos.y++;
+			});
+			activate(minos);
+			tetr.set_pos(minos);
+		} else {
+			minos.forEach((it, i, arr) => {
+				let {x, y} = it.pos;
+				set_grid(y, x, MINO_TYPE.STILL);
+			});
+			tetr = spawn_tetr();
 		}
 	}
-	if (free_to_fall) {
-		// three runs along minos -_-
-		erase(minos);
-		minos.forEach((it, i, arr) => {
-			arr[i].pos.y++;
-		});
-		activate(minos);
-		tetr.set_pos(minos);
-	} else {
-		minos.forEach((it, i, arr) => {
-			let {x, y} = it.pos;
-			set_grid(y, x, MINO_TYPE.STILL);
-		});
-        tetr = spawn_tetr();
-
-    }
-    // spawn eat time
-    if(!(--spawn_eat_time)){
-        // spawn eat there
+      // spawn eat time
+      if (tick % SPEED.FOOD) {
         a_fruit.push(new Mino({x: get_rnd(0, SIZE.W)>>0, 
             y: get_rnd(0, 3)>>0}));
-        spawn_eat_time = SPAWN_EAT_TIME;
-    } 
+      }
 
-	//tetr.set_pos(tetr.rotate());
+
+	// increment ticks. Don't remove this.
+	ticks++;
+	//let m = max_in_arr(SPEED);
+	//if (ticks > m) ticks -= m;
 }
 
 // just two helper functions to draw things
@@ -378,4 +389,12 @@ function activate(minos) {
 		let {x, y} = it.pos;
 		set_grid(y, x, MINO_TYPE.ACTIVE);
 	});
+}
+
+/* checks bounds for the list of minos */
+function check_bounds(minos) {
+	for (let i = 0; i < minos.length; ++i) {
+		if (!dead_in_grid(minos[i].pos)) return false;
+	}
+	return true;
 }
