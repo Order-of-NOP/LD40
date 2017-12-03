@@ -273,7 +273,6 @@ function gameTick() {
 		for(let i = 0; i < dminos.length; i++) {
 			if (dminos[i].pos.x == x && dminos[i].pos.y == y) {
 				snake.dead = true;
-				return; // ??
 			}
 		}
 	}

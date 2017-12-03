@@ -40,10 +40,10 @@ const MINO_TYPE = {
 // reltive speed values
 const SPEED = {
 	SNAKE: 2,
-	TETR_BOOST: 4,
+	TETR_BOOST: 2,
 	TETR: 8,
-	FOOD: 24,
-	FRUIT_FALL: 6
+	FOOD: 48,
+	FRUIT_FALL: 8
 }
 
 const SPAWN_EAT_TIME = 10;
