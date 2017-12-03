@@ -38,6 +38,8 @@ const MINO_TYPE = {
 	FRUIT: 10
 };
 
+const SPAWN_EAT_TIME = 10;
+
 const sprite_grid = make_grid(SIZE.H, SIZE.W);
 
 function init() {
@@ -86,22 +88,23 @@ function create() {
 
 function update() {
     // input for snake
-    if (input[PL.SNK].up.isDown) {
-
-		if (snake.dir != MINO_TYPE.HEAD_D) 
+    if (input[PL.SNK].up.justReleased()) {
+		// choice dir
+		if (snake.dir != MINO_TYPE.HEAD_D) {
 			snake.dir = MINO_TYPE.HEAD_U;
+		}
 		
-    } else if (input[PL.SNK].down.isDown) {
+    } else if (input[PL.SNK].down.justReleased()) {
 
 		if (snake.dir != MINO_TYPE.HEAD_U)
 			snake.dir = MINO_TYPE.HEAD_D;
 
-    } else if (input[PL.SNK].right.isDown) {
+    } else if (input[PL.SNK].right.justReleased()) {
 
 		if (snake.dir != MINO_TYPE.HEAD_L)
 			snake.dir = MINO_TYPE.HEAD_R;
 
-    } else if (input[PL.SNK].left.isDown) {
+    } else if (input[PL.SNK].left.justReleased()) {
 		
 		if (snake.dir != MINO_TYPE.HEAD_R)
 			snake.dir = MINO_TYPE.HEAD_L;

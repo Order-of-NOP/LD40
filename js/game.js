@@ -48,7 +48,7 @@ class Snake
      * @param {{x:number, y:number}} pos
      */
     add_mino(pos) {
-        let v = this.valid_set(x, y)
+        let v = this.valid_set(pos.x, pos.y)
         if (v.valid) 
             this.minos.push(new Mino(v.pos))
     }
@@ -65,6 +65,16 @@ class Snake
 
     }
 }
+// intersects check snake
+function s_in_s_check(minos) {
+    for (let i = 1; i < minos.length; i++) {
+        if (minos[0].pos.x == minos[i].pos.x
+            && minos[0].pos.y == minos[i].pos.y) {
+            return i;
+        }
+    }
+    return -1;
+}
 // ST for states
 const ST = {
 	MENU: 0,
@@ -80,8 +90,14 @@ let grid = make_grid(SIZE.H, SIZE.W);
 let snake;
 // destroyed snakes
 let dminos = [];
-
+// current tetr
 let tetr;
+// active fruit
+let a_fruit = [];
+// heavy fruit
+let h_fruit = [];
+// spawn eat time
+let spawn_eat_time = SPAWN_EAT_TIME;
 
 // Player
 const PL = {
@@ -149,6 +165,10 @@ function spawn_tetr() {
 	return new Tetramino(game.rnd.pick('litjls'), start);
 }
 
+function get_rnd(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
 // main game tick
 function gameTick() {
     // heading snake to the right direction
@@ -162,6 +182,34 @@ function gameTick() {
         // snake in grid
         if (head_in_grid(snake.get_head().pos)) {
             snake.move();
+            let {x, y} = snake.get_head().pos;
+            // snake check eat
+            if (grid[y][x] == MINO_TYPE.FRUIT) {
+                set_grid(y, x, MINO_TYPE.EMPTY);
+                let i = -1;
+                for(i = 0; i < a_fruit.length; i++) {
+                    if(a_fruit[i].pos.x == x
+                        && a_fruit[i].pos.y == y)
+                            break;
+                }
+                if(i == -1) {
+                    console.warn('WTF!???')
+                } else {
+                    a_fruit.splice(i, 1);
+                    let xt = snake.get_tail().pos.x;
+                    let yt = snake.get_tail().pos.y;
+                    // add new Mino
+                    if(grid[yt][xt-1] == MINO_TYPE.EMPTY) {
+                        snake.add_mino({x:xt-1, yt: yt});
+                    } else if (grid[yt][xt+1] == MINO_TYPE.EMPTY) {
+                        snake.add_mino({x:xt-1, yt: yt});
+                    } else if (grid[yt-1][xt] == MINO_TYPE.EMPTY) {
+                        snake.add_mino({x:xt, yt: yt-1});
+                    } else if (grid[yt+1][xt] == MINO_TYPE.EMPTY) {
+                        snake.add_mino({x:xt, yt: yt+1});
+                    }
+                }
+            }
         } else {
            snake.dead = true;
         }
@@ -189,6 +237,19 @@ function gameTick() {
         dminos = tmp_minos;
         snake = new Snake(5, 5);
     }
+    /*
+    // snake eat self
+    if(snake.length > 2) 
+    {	// check snake eat self
+        let i = s_in_s_check(snake.minos);
+        if (i > 0) {
+            let tmp = snake.minos.slice(i, snake.minos.length);
+            for(let i = 0; i < tmp.length; i++) {
+                dminos.push(tmp[i]);
+            }
+            snake.minos = snake.minos.slice(0, i-1);
+        }
+    }*/
     
     // set dminos
     for(let i = 0; i < dminos.length; i++) {
@@ -219,7 +280,50 @@ function gameTick() {
         let {x, y} = snake.get_head().pos;
         set_grid(y, x, snake.dir);
     }
+        // draw active fruits
+    {
+        //clear
+        erase(a_fruit);
+        // down
+        let tmp_a = [];
+        for(let i = 0; i < a_fruit.length; i++) {
+            let {x, y} = a_fruit[i].pos;
+            set_grid(y, x, MINO_TYPE.EMPTY);
+            // if bottom empty then fall
+            if (y < SIZE.H-1){
+                if (grid[y+1][x] == MINO_TYPE.EMPTY){
+                    a_fruit[i].down();
+                    tmp_a.push(a_fruit[i]);
+                } else {
+                    if (grid[y+1][x] == MINO_TYPE.DEAD
+                        || grid[y+1][x] == MINO_TYPE.STILL
+                        || grid[y+1][x] == MINO_TYPE.HEAVY){
+                            h_fruit.push(a_fruit[i]);
+                        } else {
+                            tmp_a.push(a_fruit[i]);
+                        }
+                }
+            } else {
+                h_fruit.push(new Mino(a_fruit[i].pos));
+            }
+        }
+        a_fruit = tmp_a;
+        // draw
+        for(let i = 0; i < a_fruit.length; i++) {
+            let {x, y} = a_fruit[i].pos;
+            set_grid(y, x, MINO_TYPE.FRUIT);
+        }
 
+    }
+       // draw heavy fruits
+       {
+        // draw
+        for(let i = 0; i < h_fruit.length; i++) {
+            let {x, y} = h_fruit[i].pos;
+            set_grid(y, x, MINO_TYPE.HEAVY);
+        }
+
+    }
 	// move a tetramino
 	let minos = tetr.minos;
 	// tetramino's way is free to fall
@@ -247,8 +351,17 @@ function gameTick() {
 			let {x, y} = it.pos;
 			set_grid(y, x, MINO_TYPE.STILL);
 		});
-		tetr = spawn_tetr();
-	}
+        tetr = spawn_tetr();
+
+    }
+    // spawn eat time
+    if(!(--spawn_eat_time)){
+        // spawn eat there
+        a_fruit.push(new Mino({x: get_rnd(0, SIZE.W)>>0, 
+            y: get_rnd(0, 3)>>0}));
+        spawn_eat_time = SPAWN_EAT_TIME;
+    } 
+
 	//tetr.set_pos(tetr.rotate());
 }
 
