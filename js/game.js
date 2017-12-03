@@ -119,7 +119,7 @@ function newGame() {
 	}
   
 	// init all the stuff
-	snake = new Snake(5, 5);
+	//snake = new Snake(5, 5);
 	tetr = spawn_tetr();
 
   // when all done, start a timer
@@ -151,6 +151,7 @@ function spawn_tetr() {
 
 // main game tick
 function gameTick() {
+	/*
     // heading snake to the right direction
     {
         // clear tail
@@ -219,6 +220,12 @@ function gameTick() {
         let {x, y} = snake.get_head().pos;
         set_grid(y, x, snake.dir);
     }
+    */
+	for (let i = 0; i < SIZE.H; i++) {
+		if (line_complete(i)) {
+			remove_line(i);
+		}
+	}
 
 	// move a tetramino
 	let minos = tetr.minos;
@@ -265,4 +272,25 @@ function activate(minos) {
 		let {x, y} = it.pos;
 		set_grid(y, x, MINO_TYPE.ACTIVE);
 	});
+}
+
+// Return true, if line complete, false otherwise.
+function line_complete(y) {
+	is_complete = true;
+	let i = 0;
+	while (is_complete && (i < grid[y].length)) {
+		if ([MINO_TYPE.STILL, MINO_TYPE.HEAVY, MINO_TYPE.DEAD]
+				.indexOf(grid[y][i]) == -1) {
+			is_complete = false;
+		}
+		i++;
+	}
+	return is_complete;
+}
+
+function remove_line(y) {
+	for (let i = 0; i < grid[y].length; i++) {
+		//if (grid[y][i].MINO_TYPE !== 
+		grid[y][i].MINO_TYPE = MINO_TYPE.EMPTY;
+	}
 }
