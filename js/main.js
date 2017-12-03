@@ -40,9 +40,13 @@ const MINO_TYPE = {
 // reltive speed values
 const SPEED = {
 	SNAKE: 2,
-	TETR_BOOST: 1,
-	TETR: 6
+	TETR_BOOST: 4,
+	TETR: 8,
+	FOOD: 24,
+	FRUIT_FALL: 6
 }
+
+const SPAWN_EAT_TIME = 10;
 
 const sprite_grid = make_grid(SIZE.H, SIZE.W);
 
@@ -92,22 +96,23 @@ function create() {
 
 function update() {
     // input for snake
-    if (input[PL.SNK].up.isDown) {
-
-		if (snake.dir != MINO_TYPE.HEAD_D) 
+    if (input[PL.SNK].up.justReleased()) {
+		// choice dir
+		if (snake.dir != MINO_TYPE.HEAD_D) {
 			snake.dir = MINO_TYPE.HEAD_U;
+		}
 		
-    } else if (input[PL.SNK].down.isDown) {
+    } else if (input[PL.SNK].down.justReleased()) {
 
 		if (snake.dir != MINO_TYPE.HEAD_U)
 			snake.dir = MINO_TYPE.HEAD_D;
 
-    } else if (input[PL.SNK].right.isDown) {
+    } else if (input[PL.SNK].right.justReleased()) {
 
 		if (snake.dir != MINO_TYPE.HEAD_L)
 			snake.dir = MINO_TYPE.HEAD_R;
 
-    } else if (input[PL.SNK].left.isDown) {
+    } else if (input[PL.SNK].left.justReleased()) {
 		
 		if (snake.dir != MINO_TYPE.HEAD_R)
 			snake.dir = MINO_TYPE.HEAD_L;
