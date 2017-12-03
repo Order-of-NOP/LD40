@@ -17,6 +17,7 @@ class Tetramino {
 	constructor(shape, init_mino) {
 		// Figure shape status from set {i, o, z, t, l, s, j}.
 		this.shape = shape; 
+		this.boost = false;
 		// Consider 0th mino as the center one.
 		if (shape === 'i') {
 			this.minos = [
