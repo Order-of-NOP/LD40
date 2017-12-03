@@ -131,6 +131,16 @@ function newGame() {
 		}
 	}
 
+	// TODO debug
+	for (let i = 0; i < SIZE.W - 5; ++i) {
+		set_grid(SIZE.H - 2, i, MINO_TYPE.DEAD);
+		dminos.push(new Mino({x: i, y: SIZE.H - 2}));
+	}
+	for (let i = 0; i < SIZE.W - 1; ++i) {
+		set_grid(SIZE.H - 1, i, MINO_TYPE.DEAD);
+		dminos.push(new Mino({x: i, y: SIZE.H - 1}));
+	}
+
 	// init all the stuff
 	snake = new Snake(2, 1);
 	tetr = spawn_tetr();
@@ -435,8 +445,14 @@ function line_complete(y) {
 // TODO: add conditions.
 function remove_line(y) {
 	for (let i = 0; i < grid[y].length; ++i) {
-		//if (grid[y][i].MINO_TYPE !==
-		set_grid(y, i, MINO_TYPE.EMPTY);
+		if (grid[y][i] = MINO_TYPE.DEAD) {
+			let dead_index = dminos.indexOf(new Mino({x: i, y: y}));
+			dminos.splice(dead_index, 1);
+			set_grid(y, i, MINO_TYPE.EMPTY);
+		}
+		else if ([MINO_TYPE.HEAVY].indexOf(grid[y][i]) == -1) {
+			set_grid(y, i, MINO_TYPE.EMPTY);
+		}
 	}
 }
 
