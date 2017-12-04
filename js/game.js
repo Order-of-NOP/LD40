@@ -82,22 +82,6 @@ class Snake
 		}
 	}
 }
-// intersects check snake
-//function s_in_s_check(minos) {
-	//for (let i = 1; i < minos.length; i++) {
-		//if (minos[0].pos.x == minos[i].pos.x
-			//&& minos[0].pos.y == minos[i].pos.y) {
-			//return i;
-		//}
-	//}
-	//return -1;
-//}
-// ST for states
-const ST = {
-	MENU: 0,
-	GAME: 1,
-	OVER: 2
-};
 
 // ATTENTION
 // the first coordinate is Y
@@ -105,18 +89,19 @@ const ST = {
 let grid = make_grid(SIZE.H, SIZE.W);
 
 let snake;
+// current tetr
+let tetr;
 // destroyed snakes
 let dminos = [];
 // falling after scoring
 let still_falling = [];
-// current tetr
-let tetr;
 // active fruit
 let a_fruit = [];
 // heavy fruit
 let h_fruit = [];
 
 let ticks = 0;
+let clk;
 
 // Player
 const PL = {
@@ -129,8 +114,8 @@ function newGame() {
 	// time's atom
 	let clk_time = 100;
 
-	// setup clock timer
-	let clk = g.t.clk;
+	// setup a clock timer
+	if (clk != null) clk.stop();
 	clk = game.time.create(false);
 	clk.loop(clk_time, gameTick, this);
 
@@ -149,14 +134,14 @@ function newGame() {
 		}
 	}
 
-	/*for (let c = 4; c < 6; ++c)
-	for (let r = 0; r < SIZE.H; ++r) {
-		set_grid(r, c, MINO_TYPE.STILL);
-	}*/
-
 	// init all the stuff
 	snake = new Snake(2, 1);
 	tetr = spawn_tetr();
+	dminos = [];
+	still_falling = [];
+	a_fruit = [];
+	h_fruit = [];
+	ticks = 0;
 
 	// when all done, start a timer
 	clk.start();
@@ -198,6 +183,14 @@ function get_rnd(min, max) {
 
 // main game tick
 function gameTick() {
+	// game over?
+	for (let i = 0; i < grid[0].length; ++i) {
+		if (grid[0][i] === MINO_TYPE.STILL) {
+			change_slide();
+			clk.stop();
+			return;
+		}
+	}
 	// heading snake to the right direction
 	{
 		// clear tail
