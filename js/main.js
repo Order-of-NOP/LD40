@@ -133,7 +133,7 @@ function create() {
 
 function update() {
 	// for slide changing
-	if (game_state === ST.MENU || game_state === ST.TUTOR) {
+	if (game_state === ST.MENU || game_state === ST.TUTOR1 || game_state === ST.TUTOR2) {
 		if (enter_key.justReleased()) change_slide();
 	}
 	else if (game_state === ST.GAME) {

@@ -43,47 +43,49 @@
 				<p id='press'>Press ENTER to start</p>
 				<!--<p id='made-by'>Created by <a href='https://ldjam.com/users/yngvarr/'>Yngvarr</a>, <a href='https://ldjam.com/users/komnotmr/'>komnotmr</a> and <a href='https://ldjam.com/users/dolorosso/'>Dolorosso</a></p>-->
 			</div>
-			<div id='tutor' class='over '>
-				<div class='rule' style="float:left;">
-					<p class='tab'> snake eat apple it length increases </p>
-					<img class='rule1' width="300" height="70" >
-					<p>1. Snake and apple.</p>
-					<p class='tab'>When snake eat apple it length increases </p>
-					<img class='rule1' width="150" height="35" >
-				</div>
-				<div class='rule'>
-					<p>2. Snake and wall.</p>
-					<p class='tab'>When snake collide with wall,<br> it die and fall to pieces </p>
-					<img class='rule2' width="150" height="75">
-				</div>
-				<div class='rule' style="margin-top:-20px;float:left;">
-					<p>3. Snake and Tetro.</p>
-					<p class='tab'>When snake collide with Tetro,<br> it last part fall to pieces </p>
-					<img style='margin-top:-10px;' class='rule3' width="80" height="145">
-				</div>
-				<div style="float:left; margin-left:-20px;">
-					<p>4. Snake and Tetro and control.</p>
-					<p class='tab'>Controls for Snake - Arrows<br>
-					Controls for Tetro - WASD</p>
-					<img style='margin-top:-10px;' class='rule4' width="100" height="90">
-				</div>
-				<div class="rule">
-						<p>5. Fallen eat.</p>
-						<p class='tab'>When eat fall at floor, <br> 
-							it is becoming heavy mino and cann't disappear</p>
-							<img style='margin-top:-10px;' class='rule5' width="170" height="90">
-							
-					</div>
-		
+			<div id='tutor1' class='tutor over hidden centered'>
+				<table>
+				<tr class='rule'>
+					<td><img class='rule1' width="150" height="35" ></td>
+					<td><p class='tab'>Snake (Player 1) eats fruit to grow</p></td>
+				</tr>
+				<tr class="rule">
+					<td><img class='rule5' width="170" height="90"></td>
+					<td><p class='tab'>When a fruit reaches the floor, it roots and becomes unremovable (but still counts when a line scores)</p></td>
+				</tr>
+				<tr class='rule'>
+					<td><img class='rule2' width="150" height="75"></td>
+					<td><p class='tab'>Don't hit things with your head, Snake,
+						unless you want to fall apart into pieces</p></td>
+				</tr>
+				</table>
+				<p>Press ENTER to continue</p>
+			</div>
+			<div id='tutor2' class='tutor over hidden centered'>
+				<table>
+				<tr class='rule'>
+					<td><img class='rule3' width="80" height="145"></td>
+					<td><p class='tab'>Hitting Snake with Tetrimino (Player 2)
+						cuts it's tail </p></td>
+				</tr>
+				<tr class='rule'>
+					<td><img class='rule4' width="100" height="90"></td>
+					<td><p class='tab'>Player 1, use cursor keys to control Snake</p>
+					<p>Player 2, you control Tetrimino with WASD.</p></td>
+				</tr>
+				</table>
+				<p>Your aim is to score as many points as you can. Have fun!</p>
+				<p>Press ENTER to start</p>
 			</div>
 			<div id='pause' class='over hidden'></div>
 			<div id='gameover' class='over centered hidden'>
 				<header>Game <span>Over</span></header>
-				<p id='score'>Your score is <span>...</span>!</p>
+				<p id='score'>Your scored <span>...</span>!</p>
 				<p>Thank you for playing!</p>
 				<p>Don't forget to share your score and leave some feedback!</p>
 			</div>
-			<div id='hud' class='over  hidden'><p style="float:left;">Scores:</p><p id='hudscore'></p></div>
+			</div>
+			<div id='hud' class='over hidden'><p style="float:left;">Score: </p><p id='hudscore'></p></div>
 		</div>
 	</body>
 </html>
