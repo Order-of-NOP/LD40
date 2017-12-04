@@ -4,9 +4,9 @@
 		<meta charset='utf-8'>
 		<title></title>
 		<link href='./css/main.css' rel='stylesheet'>
-		<link href='./css/lamp.css' rel='stylesheet'>
 		<script src='./js/3rd/underscore-min.js'></script>
 		<script src='./js/3rd/phaser.js'></script>
+		<script src='./js/menu.js'></script>
 		<script src='./js/tetris.js'></script>
 		<script src='./js/main.js'></script>
 		<script src='./js/game.js'></script>
@@ -36,15 +36,17 @@
 					<!--[><div class='the-actual-shadow'></div><]-->
 				<!--</div>-->
 			<!--</div>-->
-			<div id='menu' class='over centered hidden'>
+			<div id='menu' class='over centered'>
 				<p id='menu-top'>The more blocks you have, the harder it is to play...</p>
 				<header>Snake<span>triS</span></header>
 				<p>A co-op game for 2 players!</p>
-				<p id='press'>Press something to start</p>
+				<p id='press'>Press ENTER to start</p>
 				<!--<p id='made-by'>Created by <a href='https://ldjam.com/users/yngvarr/'>Yngvarr</a>, <a href='https://ldjam.com/users/komnotmr/'>komnotmr</a> and <a href='https://ldjam.com/users/dolorosso/'>Dolorosso</a></p>-->
 			</div>
 			<div id='tutor' class='over '>
 				<div class='rule' style="float:left;">
+					<p class='tab'> snake eat apple it length increases </p>
+					<img class='rule1' width="300" height="70" >
 					<p>1. Snake and apple.</p>
 					<p class='tab'>When snake eat apple it length increases </p>
 					<img class='rule1' width="150" height="35" >
@@ -75,6 +77,12 @@
 		
 			</div>
 			<div id='pause' class='over hidden'></div>
+			<div id='gameover' class='over centered hidden'>
+				<header>Game <span>Over</span></header>
+				<p id='score'>Your score is <span>...</span>!</p>
+				<p>Thank you for playing!</p>
+				<p>Don't forget to share your score and leave some feedback!</p>
+			</div>
 			<div id='hud' class='over  hidden'><p style="float:left;">Scores:</p><p id='hudscore'></p></div>
 		</div>
 	</body>

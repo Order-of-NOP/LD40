@@ -16,6 +16,7 @@ let g = {
 	input[1] - tetris
 */
 let input;
+let enter_key;
 
 const SIZE = {H: 18, W: 24};
 const TILE_SIZE = 32;
@@ -106,6 +107,7 @@ function create() {
 			right: game.input.keyboard.addKey(Phaser.Keyboard.D),
 		}
 	];
+	enter_key = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 	
 	emitters = [
 		[game.add.emitter(0, 0, 100), game.add.emitter(0, 0, 100)], 
@@ -127,63 +129,62 @@ function create() {
 	emitters[2][0].gravity = -400;
 	emitters[2][1].makeParticles('effect_z');
 	emitters[2][1].gravity = 400;
-
-	newGame();
 }
 
 function update() {
-    // input for snake
-    if (input[PL.SNK].up.justReleased()) {
-		// choice dir
-		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_D) {
-			snake.dir = MINO_TYPE.HEAD_U;
-			snake.turn_charged = true;
-		}
-    } else if (input[PL.SNK].down.justReleased()) {
-		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_U) {
-			snake.dir = MINO_TYPE.HEAD_D;
-			snake.turn_charged = true;
-		}
-    } else if (input[PL.SNK].right.justReleased()) {
-		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_L) {
-			snake.dir = MINO_TYPE.HEAD_R;
-			snake.turn_charged = true;
-		}
-    } else if (input[PL.SNK].left.justReleased()) {
-		if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_R) {
-			snake.dir = MINO_TYPE.HEAD_L;
-			snake.turn_charged = true;
-		}
+	// for slide changing
+	if (game_state === ST.MENU || game_state === ST.TUTOR) {
+		if (enter_key.justReleased()) change_slide();
 	}
-	// input for tetris
-	// TODO check returned by a tetr.move array of minos first 
-	let new_minos = null;
-	if (input[PL.TRS].up.justReleased()) {
-		new_minos = tetr.rotate();
-	} else if (input[PL.TRS].right.justReleased()) {
-		new_minos = tetr.move("right");
-	} else if (input[PL.TRS].left.justReleased()) {
-		new_minos = tetr.move("left");
-	}
-	if (input[PL.TRS].down.isDown) {
-		if (!tetr.boost) tetr.boost = true;
-	} else {
-		if (tetr.boost) tetr.boost = false;
-	}
-	if (new_minos !== null) {
-		if (check_bounds(new_minos)) {
-			erase(tetr.minos);
-			tetr.set_pos(new_minos);
-			activate(tetr.minos);
+	else if (game_state === ST.GAME) {
+		// input for snake
+		if (input[PL.SNK].up.justReleased()) {
+			// choice dir
+			if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_D) {
+				snake.dir = MINO_TYPE.HEAD_U;
+				snake.turn_charged = true;
+			}
+		} else if (input[PL.SNK].down.justReleased()) {
+			if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_U) {
+				snake.dir = MINO_TYPE.HEAD_D;
+				snake.turn_charged = true;
+			}
+		} else if (input[PL.SNK].right.justReleased()) {
+			if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_L) {
+				snake.dir = MINO_TYPE.HEAD_R;
+				snake.turn_charged = true;
+			}
+		} else if (input[PL.SNK].left.justReleased()) {
+			if (!snake.turn_charged && snake.dir != MINO_TYPE.HEAD_R) {
+				snake.dir = MINO_TYPE.HEAD_L;
+				snake.turn_charged = true;
+			}
+		}
+		// input for tetris
+		let new_minos = null;
+		if (input[PL.TRS].up.justReleased()) {
+			new_minos = tetr.rotate();
+		} else if (input[PL.TRS].right.justReleased()) {
+			new_minos = tetr.move("right");
+		} else if (input[PL.TRS].left.justReleased()) {
+			new_minos = tetr.move("left");
+		}
+		if (input[PL.TRS].down.isDown) {
+			if (!tetr.boost) tetr.boost = true;
+		} else {
+			if (tetr.boost) tetr.boost = false;
+		}
+		if (new_minos !== null) {
+			if (check_bounds(new_minos)) {
+				erase(tetr.minos);
+				tetr.set_pos(new_minos);
+				activate(tetr.minos);
+			}
 		}
 	}
 }
 
 function render() {
-	// doesn't work -_-
-	if (g.t.clk) {
-		game.debug.text(`Clk: ${g.t.clk.next}`, 32, 128);
-	}
 }
 
 function make_grid(n, m) {
