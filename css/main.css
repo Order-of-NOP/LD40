@@ -81,8 +81,8 @@ header span {
 	color: #0f0;
 }
 
-#tutor, p {
-	text-shadow: 0.2rem 0.2rem #000;
+p, #tutor, #hud {
+  text-shadow: 0.2rem 0.2rem #000;
 	font-family: 'CevicheOne', cursive;
 	font-size: 3.4rem;
 	color: #fff;
@@ -138,4 +138,8 @@ header span {
 
 .rule4 {
 	background-image: url('../img/rule4.png');
+}
+
+.rule5 {
+	background-image: url('../img/rule5.png');
 }
