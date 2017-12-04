@@ -151,9 +151,10 @@ function newGame() {
 		}
 	}
 
-	//dminos = _.map(_.range(1,SIZE.W), (x) => {
-		//return new Mino({x:x, y:SIZE.H - 1});
-	//});
+	/*for (let c = 4; c < 6; ++c)
+	for (let r = 0; r < SIZE.H; ++r) {
+		set_grid(r, c, MINO_TYPE.STILL);
+	}*/
 
 	// init all the stuff
 	snake = new Snake(2, 1);

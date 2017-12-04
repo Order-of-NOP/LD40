@@ -168,7 +168,10 @@ function max_in_arr(numArray) {
 /* checks bounds for the list of minos */
 function check_bounds(minos) {
 	for (let i = 0; i < minos.length; ++i) {
-		if (!dead_in_grid(minos[i].pos)) return false;
+		let pos = minos[i].pos;
+		if (!dead_in_grid(pos)) return false;
+		if ([MINO_TYPE.EMPTY, MINO_TYPE.ACTIVE, MINO_TYPE.FRUIT]
+			.indexOf(grid[pos.y][pos.x]) === -1) return false;
 	}
 	return true;
 }

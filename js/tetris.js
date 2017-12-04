@@ -150,5 +150,3 @@ class Tetramino {
 		return new_minos;
 	}
 };
-
-
