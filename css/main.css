@@ -81,7 +81,7 @@ canvas {
 	color: #0f0;
 }
 
-#menu p, #tutor {
+#menu p, #tutor, #hud {
 	font-family: 'CevicheOne', cursive;
 	font-size: 2.4rem;
 	color: #fff;

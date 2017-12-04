@@ -99,6 +99,20 @@ const ST = {
 	OVER: 2
 };
 
+// Scores
+const SCORES = {
+	SNK_DEAD: 0,
+	SNK_EAT: 1,
+	LINES: (()=>{
+		let x = []; 
+		for(let i = 0; i < SIZE.H; i++)
+			x.push(40*(i+1))
+		return x;
+	})()
+};
+
+let scores = 0;
+
 // ATTENTION
 // the first coordinate is Y
 // it's faster to remove lines
@@ -123,6 +137,15 @@ const PL = {
 	SNK: 0,
 	TRS: 1
 }
+
+let scores_view;
+
+function effect(y, x, i, j){
+	emitters[i][j].emitX = x*TILE_SIZE;;
+	emitters[i][j].emitY = y*TILE_SIZE;
+	emitters[i][j].start(true, 700, null, 10);
+}
+
 
 function newGame() {
 	// it's just a prototype, folks!
@@ -230,9 +253,12 @@ function gameTick() {
 					for(i = 0; i < a_fruit.length; i++) {
 						if(a_fruit[i].pos.x == x
 							&& a_fruit[i].pos.y == y) {
-								emitters[1].emitX = x*TILE_SIZE;
-								emitters[1].emitY = y*TILE_SIZE;
-								emitters[1].start(true, 700, null, 10);
+								//emitters[1].emitX = x*TILE_SIZE;
+								//emitters[1].emitY = y*TILE_SIZE;
+								//emitters[1].start(true, 700, null, 10);
+								effect(y, x, 0, 1)
+								effect(y, x, 0, 0)
+								scores += SCORES.SNK_EAT;
 								break;
 							}
 					}
@@ -263,10 +289,13 @@ function gameTick() {
 		// effects
 		{
 			let {x, y} = snake.get_head().pos;
-			emitters[0].emitX = x*TILE_SIZE;
-			emitters[0].emitY = y*TILE_SIZE;
-			emitters[0].start(true, 700, null, 10);
+			effect(y, x, 1, 1)
+			effect(y, x, 1, 0)
+			//emitters[0].emitX = x*TILE_SIZE;
+			//emitters[0].emitY = y*TILE_SIZE;
+			//emitters[0].start(true, 700, null, 10);
 		}
+		scores += SCORES.SNK_DEAD;
 		// kill snake and clear
 		for (let i = 0; i < snake.minos.length; i++) {
 			dminos.push(snake.minos[i]);
@@ -426,16 +455,21 @@ function gameTick() {
 			y: get_rnd(0, 3)>>0}));
 	}
 	// line removal
+	let n = -1;
 	for (let i = 0; i < SIZE.H; i++) {
 		if (line_complete(i)) {
 			remove_line(i);
+			n++;
 			//shift_upper_lines(i);
 		}
 	}
+	if(n > -1)
+		scores += SCORES.LINES[n];
 	// increment ticks. Don't remove this.
 	ticks++;
 	let m = _.max(SPEED);
 	if (ticks > m) ticks -= m;
+	scores_view.innerText = scores;
 }
 
 // just two helper functions to draw things
@@ -497,9 +531,11 @@ function remove_line(y) {
 	}
 	//effect
 	for (let i = 0; i < grid[y].length; i++) {
-		emitters[2].emitX = i*TILE_SIZE;
-		emitters[2].emitY = y*TILE_SIZE;
-		emitters[2].start(true, 700, null, 10);
+		//emitters[2].emitX = i*TILE_SIZE;
+		//emitters[2].emitY = y*TILE_SIZE;
+		//emitters[2].start(true, 700, null, 10);
+		effect(y, i, 2, 1)
+		effect(y, i, 2, 0)
 	}
 	for (let r = 0; r < y; ++r) {
 		for (let c = 0; c < SIZE.W; ++c) {

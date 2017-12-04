@@ -65,6 +65,7 @@ function init() {
 		//,transparent: true
 	};
 	game = new Phaser.Game(config);
+	scores_view = document.getElementById('hudscore');
 }
 
 let sounds = {
@@ -82,8 +83,10 @@ function preload() {
 	//game.load.image('thing', '../img/thing.png');
 	game.load.spritesheet('sheet', '../img/sheet.png', TILE_SIZE, TILE_SIZE);
 	// effects
+	game.load.image('effect_z', '../img/effect_z.png');
 	game.load.image('effect_h', '../img/effect_h.png');
 	game.load.image('effect_f', '../img/effect_f.png');
+
 }
 
 function create() {
@@ -105,16 +108,26 @@ function create() {
 	];
 	
 	emitters = [
-		game.add.emitter(0, 0, 100), 
-		game.add.emitter(0, 0, 100), 
-		game.add.emitter(0, 0, 100) 
+		[game.add.emitter(0, 0, 100), game.add.emitter(0, 0, 100)], 
+		[game.add.emitter(0, 0, 100), game.add.emitter(0, 0, 100)],
+		[game.add.emitter(0, 0, 100), game.add.emitter(0, 0, 100)]
 	];
-	emitters[0].makeParticles('effect_h');
-	emitters[0].gravity = -400;
-	emitters[1].makeParticles('effect_f');
-	emitters[1].gravity = -400;
-	emitters[2].makeParticles('effect_h');
-	emitters[2].gravity = -400;
+
+	emitters[0][0].makeParticles('effect_f');
+	emitters[0][0].gravity = -400;
+	emitters[0][1].makeParticles('effect_f');
+	emitters[0][1].gravity = 400;
+
+	emitters[1][0].makeParticles('effect_h');
+	emitters[1][0].gravity = -400;
+	emitters[1][1].makeParticles('effect_h');
+	emitters[1][1].gravity = 400;
+
+	emitters[2][0].makeParticles('effect_z');
+	emitters[2][0].gravity = -400;
+	emitters[2][1].makeParticles('effect_z');
+	emitters[2][1].gravity = 400;
+
 	newGame();
 }
 
