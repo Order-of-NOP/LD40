@@ -40,13 +40,11 @@ const MINO_TYPE = {
 // reltive speed values
 const SPEED = {
 	SNAKE: 2,
-	TETR_BOOST: 2,
+	TETR_BOOST: 1,
 	TETR: 8,
 	FOOD: 48,
 	FRUIT_FALL: 8
 }
-
-const SPAWN_EAT_TIME = 10;
 
 const sprite_grid = make_grid(SIZE.H, SIZE.W);
 
@@ -64,6 +62,7 @@ function init() {
 			update: update,
 			render: render
 		}
+		//,transparent: true
 	};
 	game = new Phaser.Game(config);
 }
@@ -164,3 +163,15 @@ function make_grid(n, m) {
 function max_in_arr(numArray) {
 	return Math.max.apply(null, numArray);
 }
+
+/* checks bounds for the list of minos */
+function check_bounds(minos) {
+	for (let i = 0; i < minos.length; ++i) {
+		let pos = minos[i].pos;
+		if (!dead_in_grid(pos)) return false;
+		if ([MINO_TYPE.EMPTY, MINO_TYPE.ACTIVE, MINO_TYPE.FRUIT]
+			.indexOf(grid[pos.y][pos.x]) === -1) return false;
+	}
+	return true;
+}
+
