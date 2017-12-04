@@ -62,6 +62,7 @@ function init() {
 			update: update,
 			render: render
 		}
+		//,transparent: true
 	};
 	game = new Phaser.Game(config);
 }
