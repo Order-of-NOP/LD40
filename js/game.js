@@ -229,8 +229,12 @@ function gameTick() {
 					let i = -1;
 					for(i = 0; i < a_fruit.length; i++) {
 						if(a_fruit[i].pos.x == x
-							&& a_fruit[i].pos.y == y)
-							break;
+							&& a_fruit[i].pos.y == y) {
+								emitters[1].emitX = x*TILE_SIZE;
+								emitters[1].emitY = y*TILE_SIZE;
+								emitters[1].start(true, 700, null, 10);
+								break;
+							}
 					}
 					if(i == -1) {
 						console.warn('WTF!???')
@@ -256,6 +260,13 @@ function gameTick() {
 			snake.dead = true;
 		}
 	} else {
+		// effects
+		{
+			let {x, y} = snake.get_head().pos;
+			emitters[0].emitX = x*TILE_SIZE;
+			emitters[0].emitY = y*TILE_SIZE;
+			emitters[0].start(true, 700, null, 10);
+		}
 		// kill snake and clear
 		for (let i = 0; i < snake.minos.length; i++) {
 			dminos.push(snake.minos[i]);
@@ -483,6 +494,12 @@ function remove_line(y) {
 		else if ([MINO_TYPE.HEAVY].indexOf(grid[y][i]) == -1) {
 			set_grid(y, i, MINO_TYPE.EMPTY);
 		}
+	}
+	//effect
+	for (let i = 0; i < grid[y].length; i++) {
+		emitters[2].emitX = i*TILE_SIZE;
+		emitters[2].emitY = y*TILE_SIZE;
+		emitters[2].start(true, 700, null, 10);
 	}
 	for (let r = 0; r < y; ++r) {
 		for (let c = 0; c < SIZE.W; ++c) {

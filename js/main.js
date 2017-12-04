@@ -73,12 +73,17 @@ let sounds = {
 	eat: null
 }
 
+let emitter;
+
 function preload() {
 	//game.load.audio('win', '../music/win.wav');
 	game.load.audio('eat', '../music/beep.wav');
 	// load all the sprites, fonts and other stuff
 	//game.load.image('thing', '../img/thing.png');
 	game.load.spritesheet('sheet', '../img/sheet.png', TILE_SIZE, TILE_SIZE);
+	// effects
+	game.load.image('effect_h', '../img/effect_h.png');
+	game.load.image('effect_f', '../img/effect_f.png');
 }
 
 function create() {
@@ -88,6 +93,7 @@ function create() {
 	game.world.setBounds(0, 0, 800, 600);
 	sounds.eat = game.add.audio('eat')
 	//game.physics.enable(g.g.pl);
+	game.physics.startSystem(Phaser.Physics.ARCADE);
 	input = [
 		game.input.keyboard.createCursorKeys(),
 		{
@@ -97,7 +103,18 @@ function create() {
 			right: game.input.keyboard.addKey(Phaser.Keyboard.D),
 		}
 	];
-
+	
+	emitters = [
+		game.add.emitter(0, 0, 100), 
+		game.add.emitter(0, 0, 100), 
+		game.add.emitter(0, 0, 100) 
+	];
+	emitters[0].makeParticles('effect_h');
+	emitters[0].gravity = -400;
+	emitters[1].makeParticles('effect_f');
+	emitters[1].gravity = -400;
+	emitters[2].makeParticles('effect_h');
+	emitters[2].gravity = -400;
 	newGame();
 }
 
