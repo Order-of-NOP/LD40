@@ -81,7 +81,7 @@ canvas {
 	color: #0f0;
 }
 
-#menu p {
+#menu p, #tutor {
 	font-family: 'CevicheOne', cursive;
 	font-size: 2.4rem;
 	color: #fff;
@@ -99,4 +99,24 @@ canvas {
 #menu #press {
 	margin-top: 20rem;
 	font-size: 3.2rem;
+}
+
+#tutor , #tutor .tab{
+	padding: 20px;
+}
+
+.rule1 {
+	background-image: url('../img/rule1.png');
+}
+
+.rule2 {
+	background-image: url('../img/rule2.png');
+}
+
+.rule3 {
+	background-image: url('../img/rule3.png');
+}
+
+.rule4 {
+	background-image: url('../img/rule4.png');
 }
