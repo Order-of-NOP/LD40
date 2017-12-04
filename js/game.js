@@ -43,7 +43,7 @@ class Snake
 				x: x == null ? 0 : x,
 				y: y == null ? 0 : y
 			},
-			valid: x == null || y == null
+			valid: x != null || y != null
 		}
 	}
 	/** add_mino
@@ -241,13 +241,13 @@ function gameTick() {
 						let yt = snake.get_tail().pos.y;
 						// add new Mino
 						if(grid[yt][xt-1] == MINO_TYPE.EMPTY) {
-							snake.add_mino({x:xt-1, yt: yt});
+							snake.add_mino({x:xt-1, y: yt});
 						} else if (grid[yt][xt+1] == MINO_TYPE.EMPTY) {
-							snake.add_mino({x:xt-1, yt: yt});
+							snake.add_mino({x:xt-1, y: yt});
 						} else if (grid[yt-1][xt] == MINO_TYPE.EMPTY) {
-							snake.add_mino({x:xt, yt: yt-1});
+							snake.add_mino({x:xt, y: yt-1});
 						} else if (grid[yt+1][xt] == MINO_TYPE.EMPTY) {
-							snake.add_mino({x:xt, yt: yt+1});
+							snake.add_mino({x:xt, y: yt+1});
 						}
 					}
 				}
