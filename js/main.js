@@ -46,8 +46,6 @@ const SPEED = {
 	FRUIT_FALL: 8
 }
 
-const SPAWN_EAT_TIME = 10;
-
 const sprite_grid = make_grid(SIZE.H, SIZE.W);
 
 function init() {

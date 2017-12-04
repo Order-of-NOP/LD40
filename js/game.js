@@ -83,15 +83,15 @@ class Snake
 	}
 }
 // intersects check snake
-function s_in_s_check(minos) {
-	for (let i = 1; i < minos.length; i++) {
-		if (minos[0].pos.x == minos[i].pos.x
-			&& minos[0].pos.y == minos[i].pos.y) {
-			return i;
-		}
-	}
-	return -1;
-}
+//function s_in_s_check(minos) {
+	//for (let i = 1; i < minos.length; i++) {
+		//if (minos[0].pos.x == minos[i].pos.x
+			//&& minos[0].pos.y == minos[i].pos.y) {
+			//return i;
+		//}
+	//}
+	//return -1;
+//}
 // ST for states
 const ST = {
 	MENU: 0,
@@ -115,8 +115,6 @@ let tetr;
 let a_fruit = [];
 // heavy fruit
 let h_fruit = [];
-// spawn eat time
-let spawn_eat_time = SPAWN_EAT_TIME;
 
 let ticks = 0;
 
@@ -375,7 +373,6 @@ function gameTick() {
 	}
 
 	// it'sa time to move our tetr
-	// TODO help me! I'm threaten by a snake!
 	if (ticks % (tetr.boost ? SPEED.TETR_BOOST : SPEED.TETR) == 0) {
 		let minos = tetr.minos;
 		// tetramino's way is free to fall
@@ -392,7 +389,7 @@ function gameTick() {
 				free_to_fall = false;
 				break;
 			}
-			if (snake_body.indexOf(grid[y+1][x])) {
+			if (snake_body.indexOf(grid[y+1][x]) >= 0) {
 				snake.collide();
 			}
 		}
@@ -413,7 +410,7 @@ function gameTick() {
 		}
 	}
 	// new fresh fruit spawn
-	if (ticks % SPEED.FOOD == 0) {
+	if (a_fruit.length === 0 || ticks % SPEED.FOOD === 0) {
 		a_fruit.push(new Mino({x: get_rnd(1, SIZE.W-1)>>0, 
 			y: get_rnd(0, 3)>>0}));
 	}
@@ -426,8 +423,8 @@ function gameTick() {
 	}
 	// increment ticks. Don't remove this.
 	ticks++;
-	//let m = max_in_arr(SPEED);
-	//if (ticks > m) ticks -= m;
+	let m = _.max(SPEED);
+	if (ticks > m) ticks -= m;
 }
 
 // just two helper functions to draw things
