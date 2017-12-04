@@ -40,7 +40,7 @@ const MINO_TYPE = {
 // reltive speed values
 const SPEED = {
 	SNAKE: 2,
-	TETR_BOOST: 2,
+	TETR_BOOST: 1,
 	TETR: 8,
 	FOOD: 48,
 	FRUIT_FALL: 8
@@ -164,3 +164,12 @@ function make_grid(n, m) {
 function max_in_arr(numArray) {
 	return Math.max.apply(null, numArray);
 }
+
+/* checks bounds for the list of minos */
+function check_bounds(minos) {
+	for (let i = 0; i < minos.length; ++i) {
+		if (!dead_in_grid(minos[i].pos)) return false;
+	}
+	return true;
+}
+

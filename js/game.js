@@ -8,6 +8,8 @@ class Snake
 	constructor(x, y) {
 		let v = this.valid_set(x, y);
 		this.dead = false;
+		// what point to start ejecting tail from
+		this.eject = -1;
 		this.minos = [
 			new Mino(v.pos),
 			new Mino({x: v.pos.x + 1, y: v.pos.y}),
@@ -64,6 +66,20 @@ class Snake
 		this.minos[0].pos.x += this.dirs[this.dir].x;
 		this.minos[0].pos.y += this.dirs[this.dir].y
 
+	}
+	collide() {
+		let minos = this.minos;
+		for (let i = 0; i < minos.length; ++i) {
+			let pos = minos[i].pos;
+			if (any_neigh(pos, MINO_TYPE.ACTIVE)) {
+				if (i === 0) {
+					this.dead = 0;
+					break
+				}
+				this.eject = i;
+				break;
+			}
+		}
 	}
 }
 // intersects check snake
@@ -135,9 +151,9 @@ function newGame() {
 		}
 	}
 
-	dminos = _.map(_.range(1,SIZE.W), (x) => {
-		return new Mino({x:x, y:SIZE.H - 1});
-	});
+	//dminos = _.map(_.range(1,SIZE.W), (x) => {
+		//return new Mino({x:x, y:SIZE.H - 1});
+	//});
 
 	// init all the stuff
 	snake = new Snake(2, 1);
@@ -148,7 +164,6 @@ function newGame() {
 }
 
 /* sets states in both grid and sprite_grid */
-// TODO investigate, do we really need `grid`
 function set_grid(y, x, type) {
 	if (typeof(type) !== 'number') console.warn(`'${type}' is not a number.`);
 	grid[y][x] = type;
@@ -195,6 +210,17 @@ function gameTick() {
 	if (!snake.dead) {
 		// snake is in grid
 		if (head_in_grid(snake.get_head().pos, snake.dir)) {
+			if (snake.eject !== -1) {
+				for (let i = snake.eject; i < snake.minos.length; i++) {
+					dminos.push(snake.minos[i]);
+					set_grid(snake.minos[i].pos.y, snake.minos[i].pos.x,
+						MINO_TYPE.EMPTY);
+				}
+				// remove duplicates using underscore.js
+				dminos = _.uniq(dminos);
+				snake.minos.splice(snake.eject, Number.MAX_VALUE)
+				snake.eject = -1;
+			}
 			if (ticks % SPEED.SNAKE == 0) {
 				snake.move();
 				let {x, y} = snake.get_head().pos;
@@ -232,7 +258,7 @@ function gameTick() {
 		}
 	} else {
 		// kill snake and clear
-		for(let i = 0; i < snake.minos.length; i++) {
+		for (let i = 0; i < snake.minos.length; i++) {
 			dminos.push(snake.minos[i]);
 			set_grid(dminos[i].pos.y, dminos[i].pos.x, MINO_TYPE.EMPTY);
 		}
@@ -242,7 +268,7 @@ function gameTick() {
 		// TODO make it smarter, folk
 		for (let y = 1; y < SIZE.H; ++y) {
 			let t = true;
-			for(let x = 2; x < SIZE.W-3; x++) {
+			for(let x = 2; x < SIZE.W - 3; x++) {
 				if (grid[y][x] == MINO_TYPE.EMPTY
 					&& grid[y][x+1] == MINO_TYPE.EMPTY
 					&& grid[y][x+2] == MINO_TYPE.EMPTY) {
@@ -291,7 +317,10 @@ function gameTick() {
 			}
 		}
 		// still minos
-		if(grid[y][x] == MINO_TYPE.STILL){
+		if (grid[y][x] === MINO_TYPE.STILL){
+			snake.dead = true;
+		}
+		if (grid[y][x] === MINO_TYPE.ACTIVE) {
 			snake.dead = true;
 		}
 	}
@@ -347,19 +376,23 @@ function gameTick() {
 	// it'sa time to move our tetr
 	// TODO help me! I'm threaten by a snake!
 	if (ticks % (tetr.boost ? SPEED.TETR_BOOST : SPEED.TETR) == 0) {
-		// move a tetramino
 		let minos = tetr.minos;
 		// tetramino's way is free to fall
 		let free_to_fall = true;
+		let snake_body = [MINO_TYPE.SNAKE, MINO_TYPE.HEAD_U, MINO_TYPE.HEAD_D,
+			MINO_TYPE.HEAD_L, MINO_TYPE.HEAD_R];
 		for (let i = 0; i < minos.length; ++i) {
 			let {x, y} = minos[i].pos;
-			// TODO there are some more cases
-			if (y >= SIZE.H - 1) { free_to_fall = false; break; }
-			else if (grid[y+1][x] !== MINO_TYPE.EMPTY
-				 && grid[y+1][x] !== MINO_TYPE.ACTIVE
-					&&	grid[y+1][x] !== MINO_TYPE.FRUIT ) {
+			if ((y >= SIZE.H - 1) || (
+					[MINO_TYPE.EMPTY,
+					MINO_TYPE.ACTIVE,
+					MINO_TYPE.FRUIT].indexOf(grid[y+1][x]) === -1
+					&& snake_body.indexOf(grid[y+1][x]) === -1)) {
 				free_to_fall = false;
 				break;
+			}
+			if (snake_body.indexOf(grid[y+1][x])) {
+				snake.collide();
 			}
 		}
 		if (free_to_fall) {
@@ -383,7 +416,6 @@ function gameTick() {
 		a_fruit.push(new Mino({x: get_rnd(1, SIZE.W-1)>>0, 
 			y: get_rnd(0, 3)>>0}));
 	}
-
 	// line removal
 	for (let i = 0; i < SIZE.H; i++) {
 		if (line_complete(i)) {
@@ -391,7 +423,6 @@ function gameTick() {
 			//shift_upper_lines(i);
 		}
 	}
-
 	// increment ticks. Don't remove this.
 	ticks++;
 	//let m = max_in_arr(SPEED);
@@ -413,12 +444,19 @@ function activate(minos) {
 	});
 }
 
-/* checks bounds for the list of minos */
-function check_bounds(minos) {
-	for (let i = 0; i < minos.length; ++i) {
-		if (!dead_in_grid(minos[i].pos)) return false;
-	}
-	return true;
+// is there any particular typed mino in the neighborhood
+function any_neigh(pos, type) {
+	let {x, y} = pos;
+	let ps = [
+		{x: x + 1, y: y},
+		{x: x - 1, y: y},
+		{x: x, y: y + 1},
+		{x: x, y: y - 1}
+	];
+	let n = _.filter(ps, (p) => {
+		return p.x >= 0 && p.y >= 0 && p.x < SIZE.W && p.y < SIZE.H;
+	});
+	return _.map(n, (p) => { return grid[p.y][p.x]; }).indexOf(type) !== -1;
 }
 
 // Return true, if line complete, false otherwise.
@@ -457,14 +495,3 @@ function remove_line(y) {
 	// sort by y descending to fall right 
 	still_falling = _.sortBy(still_falling, (m) => {return m.pos.y});
 }
-
-/*function shift_upper_lines(y){
-	for (let line = y; line > 0; --line) {
-		for (let i = 0; i < grid[line].length; ++i) {
-			if (grid[line - 1][i] === MINO_TYPE.STILL) {
-				set_grid(line - 1, i, MINO_TYPE.EMPTY);
-				set_grid(line, i, MINO_TYPE.STILL);
-			}
-		}
-	}
-}*/
