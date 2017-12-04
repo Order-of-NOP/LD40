@@ -150,9 +150,16 @@ function set_grid(y, x, type) {
 }
 
 /* checks if pos is in bounds of grid */
-function head_in_grid(head_pos) {
-	return (head_pos.x > 0 && head_pos.x < SIZE.W - 1
-		&& head_pos.y > 0 && head_pos.y < SIZE.H - 1);
+function head_in_grid(pos, direction) {
+	return !(
+		(pos.x <= 0 && direction == MINO_TYPE.HEAD_L)
+		|| (pos.x >= SIZE.W - 1 && direction == MINO_TYPE.HEAD_R)
+		|| (pos.y <= 0 && direction == MINO_TYPE.HEAD_U)
+		|| (pos.y >= SIZE.H - 1 && direction == MINO_TYPE.HEAD_D)
+	);
+
+	return (pos.x > 0 && pos.x < SIZE.W - 1
+		&& pos.y > 0 && pos.y < SIZE.H - 1);
 }
 
 function dead_in_grid(mino_pos) {
@@ -178,10 +185,10 @@ function gameTick() {
 		set_grid(y, x, MINO_TYPE.EMPTY);
 		snake.turn_charged = false;
 	}
-	// snake alive
+	// snake is alive
 	if (!snake.dead) {
-		// snake in grid
-		if (head_in_grid(snake.get_head().pos)) {
+		// snake is in grid
+		if (head_in_grid(snake.get_head().pos, snake.dir)) {
 			if (ticks % SPEED.SNAKE == 0) {
 				snake.move();
 				let {x, y} = snake.get_head().pos;
@@ -211,29 +218,6 @@ function gameTick() {
 						} else if (grid[yt+1][xt] == MINO_TYPE.EMPTY) {
 							snake.add_mino({x:xt, yt: yt+1});
 						}
-					}
-				} else {
-					switch(snake.dir){
-						case MINO_TYPE.HEAD_U:
-							if (y < SIZE.H -1 )
-								if (grid[y+1][x] == MINO_TYPE.STILL)
-									snake.dead = true;
-						break;
-						case MINO_TYPE.HEAD_L:
-							if (x > 0 )
-								if (grid[y][x-1] == MINO_TYPE.STILL)
-									snake.dead = true;
-						break;
-						case MINO_TYPE.HEAD_D:
-							if (y > 0)
-								if (grid[y-1][x] == MINO_TYPE.STILL)
-									snake.dead = true;
-						break;
-						case MINO_TYPE.HEAD_R:
-							if (x < SIZE.W - 1)
-								if (grid[y][x+1] == MINO_TYPE.STILL)
-									snake.dead = true;
-						break;
 					}
 				}
 			} // speed check
